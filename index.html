@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="CandyBabble Careers — AI job search with ATS resume tailoring and private accessibility filtering for every job seeker.">
+  <title>CandyBabble Careers — AI Job Search & Resume Tailoring</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=OpenDyslexic:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+:root{--bg:#060c14;--bg-card:rgba(255,255,255,0.03);--border:#1e293b;--accent:#2563eb;--accent-hover:#1d4ed8;--text:#f8fafc;--muted:#94a3b8;--radius:16px;--radius-sm:8px;--success:#22c55e;--warning:#f59e0b;--error:#ef4444;--font:'Inter',system-ui,sans-serif;}
+[data-theme="dyslexia"]{--bg:#f5f0e8;--bg-card:rgba(0,0,0,0.04);--border:#d1c9b8;--accent:#1e40af;--accent-hover:#1e3a8a;--text:#1a1a1a;--muted:#555;--font:'OpenDyslexic',sans-serif;font-size:18px;letter-spacing:.05em;line-height:1.9;}
+[data-theme="high-contrast"]{--bg:#000;--bg-card:#111;--border:#fff;--accent:#ffff00;--accent-hover:#e6e600;--text:#fff;--muted:#ccc;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{font-size:16px;scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--font);line-height:1.6;min-height:100vh;-webkit-font-smoothing:antialiased;}
+.skip-link{position:absolute;top:-48px;left:16px;background:var(--accent);color:#fff;padding:8px 16px;border-radius:var(--radius-sm);font-weight:600;text-decoration:none;z-index:9999;transition:top .2s;}
+.skip-link:focus{top:16px;}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px;}
+h1{font-size:2.25rem;font-weight:700;letter-spacing:-.02em;line-height:1.2;}
+h2{font-size:1.5rem;font-weight:600;line-height:1.3;}
+h3{font-size:1.1rem;font-weight:600;}
+.text-muted{color:var(--muted);font-size:.9375rem;}
+.text-sm{font-size:.875rem;}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:32px;backdrop-filter:blur(10px);box-shadow:0 8px 24px rgba(0,0,0,.25);}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:var(--radius-sm);font-family:var(--font);font-size:.9375rem;font-weight:500;cursor:pointer;border:none;transition:transform .15s,background .15s,opacity .15s;text-decoration:none;}
+.btn:active{transform:translateY(1px);}
+.btn:disabled{opacity:.5;cursor:not-allowed;}
+.btn-primary{background:var(--accent);color:#fff;}
+.btn-primary:hover:not(:disabled){background:var(--accent-hover);transform:translateY(-1px);}
+.btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border);}
+.btn-ghost:hover:not(:disabled){border-color:var(--accent);color:var(--text);}
+.btn-sm{padding:6px 14px;font-size:.875rem;}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;font-size:.8125rem;font-weight:500;}
+.badge-blue{background:rgba(37,99,235,.15);color:#60a5fa;border:1px solid rgba(37,99,235,.3);}
+.badge-demo{background:rgba(245,158,11,.12);color:#fbbf24;border:1px solid rgba(245,158,11,.25);font-size:.75rem;}
+.badge-green{background:rgba(34,197,94,.12);color:#4ade80;border:1px solid rgba(34,197,94,.25);}
+/* Sign-in */
+#screen-signin{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px;}
+.signin-box{width:100%;max-width:440px;}
+.signin-logo{display:flex;align-items:center;gap:12px;margin-bottom:32px;}
+.logo-mark{width:44px;height:44px;background:var(--accent);border-radius:10px;display:grid;place-items:center;font-weight:700;font-size:1.1rem;color:#fff;flex-shrink:0;}
+.signin-input{width:100%;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font);font-size:1rem;padding:12px 16px;margin-bottom:12px;transition:border-color .15s;}
+.signin-input:focus{outline:none;border-color:var(--accent);}
+.demo-note{margin-top:24px;padding:16px;background:rgba(37,99,235,.08);border:1px solid rgba(37,99,235,.2);border-radius:var(--radius-sm);font-size:.875rem;color:var(--muted);line-height:1.6;}
+/* App shell */
+#app{display:none;flex-direction:column;min-height:100vh;}
+.topbar{position:sticky;top:0;z-index:100;background:rgba(6,12,20,.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;gap:16px;height:60px;}
+.topbar-logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1rem;text-decoration:none;color:var(--text);flex-shrink:0;}
+.topbar-logo .logo-mark{width:32px;height:32px;font-size:.8rem;border-radius:7px;}
+.topbar-spacer{flex:1;}
+.privacy-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;font-size:.8125rem;font-weight:500;cursor:pointer;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);color:#4ade80;font-family:var(--font);transition:background .15s;}
+.privacy-btn:hover{background:rgba(34,197,94,.18);}
+.theme-btn{background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:var(--radius-sm);font-size:.8125rem;padding:5px 12px;cursor:pointer;font-family:var(--font);transition:border-color .15s;}
+.theme-btn:hover{border-color:var(--accent);color:var(--text);}
+.nav{background:rgba(6,12,20,.6);border-bottom:1px solid var(--border);padding:0 24px;display:flex;gap:0;overflow-x:auto;scrollbar-width:none;}
+.nav::-webkit-scrollbar{display:none;}
+.nav-btn{display:inline-flex;align-items:center;gap:7px;padding:14px 18px;font-size:.875rem;font-weight:500;color:var(--muted);background:transparent;border:none;border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap;font-family:var(--font);transition:color .15s,border-color .15s;}
+.nav-btn:hover{color:var(--text);}
+.nav-btn.active{color:var(--accent);border-bottom-color:var(--accent);}
+.nav-btn svg{width:16px;height:16px;flex-shrink:0;}
+main{flex:1;padding:32px 24px;max-width:920px;margin:0 auto;width:100%;}
+.screen{display:none;opacity:0;transform:translateY(8px);transition:opacity .25s,transform .25s;}
+.screen.active{display:block;}
+.screen.visible{opacity:1;transform:translateY(0);}
+.section-header{margin-bottom:24px;}
+.stack>*+*{margin-top:16px;}
+.stack-lg>*+*{margin-top:24px;}
+/* Dashboard */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:24px;}
+.stat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px 24px;backdrop-filter:blur(8px);}
+.stat-card .label{font-size:.8125rem;color:var(--muted);margin-bottom:6px;}
+.stat-card .value{font-size:1.75rem;font-weight:700;letter-spacing:-.02em;}
+.stat-card .sub{font-size:.8125rem;color:var(--muted);margin-top:4px;}
+.filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
+.filter-btn{padding:6px 14px;border-radius:999px;font-size:.8125rem;font-weight:500;cursor:pointer;background:transparent;border:1px solid var(--border);color:var(--muted);font-family:var(--font);transition:all .15s;}
+.filter-btn.active,.filter-btn:hover{background:var(--accent);border-color:var(--accent);color:#fff;}
+.job-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px 24px;display:flex;align-items:flex-start;gap:16px;transition:border-color .15s,box-shadow .15s;}
+.job-card:hover{border-color:var(--accent);box-shadow:0 0 0 1px rgba(37,99,235,.15);}
+.job-score{flex-shrink:0;width:52px;height:52px;border-radius:50%;border:2px solid var(--accent);display:grid;place-items:center;font-size:.8125rem;font-weight:700;color:var(--accent);}
+.job-info{flex:1;min-width:0;}
+.job-title{font-weight:600;margin-bottom:4px;}
+.job-meta{font-size:.875rem;color:var(--muted);}
+.job-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;}
+.job-tag{padding:3px 8px;border-radius:4px;font-size:.75rem;font-weight:500;background:rgba(37,99,235,.1);color:#60a5fa;}
+/* Resume */
+.resume-textarea{width:100%;min-height:160px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font);font-size:.9375rem;padding:16px;resize:vertical;line-height:1.6;transition:border-color .15s;}
+.resume-textarea:focus{outline:none;border-color:var(--accent);}
+.resume-textarea::placeholder{color:var(--muted);}
+.progress-wrap{background:var(--border);border-radius:999px;height:6px;overflow:hidden;}
+.progress-fill{height:100%;background:var(--accent);border-radius:999px;width:0;transition:width .4s;}
+.extracted-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:16px;}
+.extracted-field label{font-size:.75rem;color:var(--muted);font-weight:500;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:4px;}
+.extracted-field input{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--font);font-size:.9375rem;padding:8px 12px;}
+.extracted-field input:focus{outline:none;border-color:var(--accent);}
+/* Rewriter */
+.rewriter-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+@media(max-width:680px){.rewriter-grid{grid-template-columns:1fr;}}
+.fps-line{padding:12px 16px;border-radius:var(--radius-sm);font-size:.9375rem;line-height:1.6;margin-bottom:8px;}
+.fps-fracture{background:rgba(239,68,68,.08);border-left:3px solid #ef4444;}
+.fps-pressure{background:rgba(245,158,11,.08);border-left:3px solid #f59e0b;}
+.fps-shift{background:rgba(34,197,94,.08);border-left:3px solid #22c55e;}
+.fps-label{font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;opacity:.65;}
+/* Accessibility profile */
+.chips-grid{display:flex;flex-wrap:wrap;gap:10px;}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:999px;font-size:.875rem;font-weight:500;cursor:pointer;background:transparent;border:1px solid var(--border);color:var(--muted);font-family:var(--font);transition:all .15s;}
+.chip:hover{border-color:var(--accent);color:var(--text);}
+.chip.selected{background:rgba(37,99,235,.15);border-color:var(--accent);color:var(--text);}
+.privacy-notice{background:rgba(34,197,94,.05);border:1px solid rgba(34,197,94,.2);border-radius:var(--radius);padding:20px 24px;}
+.privacy-notice h3{color:#4ade80;margin-bottom:8px;display:flex;align-items:center;gap:8px;font-size:.9375rem;}
+/* Pricing */
+.pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:24px;}
+.price-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:32px;display:flex;flex-direction:column;gap:16px;transition:border-color .2s;}
+.price-card.featured{border-color:var(--accent);box-shadow:0 0 0 1px rgba(37,99,235,.2);}
+.price-amount{font-size:2.5rem;font-weight:700;letter-spacing:-.03em;}
+.price-amount span{font-size:1rem;font-weight:400;color:var(--muted);}
+.price-features{list-style:none;flex:1;}
+.price-features li{padding:6px 0;font-size:.9375rem;display:flex;align-items:flex-start;gap:8px;}
+.price-features li::before{content:'✓';color:var(--accent);font-weight:700;flex-shrink:0;}
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;place-items:center;z-index:1000;padding:24px;}
+.modal-overlay.open{display:grid;}
+.modal{background:#0d1825;border:1px solid var(--border);border-radius:var(--radius);padding:32px;max-width:540px;width:100%;max-height:90vh;overflow-y:auto;}
+.modal-close{float:right;background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.5rem;line-height:1;padding:0 4px;}
+.modal-close:hover{color:var(--text);}
+/* Toast */
+#toast{position:fixed;bottom:24px;right:24px;background:#1e293b;border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 20px;font-size:.9375rem;font-weight:500;z-index:2000;opacity:0;transform:translateY(8px);transition:opacity .2s,transform .2s;pointer-events:none;max-width:360px;}
+#toast.show{opacity:1;transform:translateY(0);}
+#toast.success{border-left:3px solid var(--success);}
+#toast.error{border-left:3px solid var(--error);}
+#toast.info{border-left:3px solid var(--accent);}
+/* Utils */
+.divider{border:none;border-top:1px solid var(--border);margin:24px 0;}
+.fw-600{font-weight:600;}
+.mt-8{margin-top:8px;}.mt-16{margin-top:16px;}.mt-24{margin-top:24px;}
+.mb-8{margin-bottom:8px;}.mb-16{margin-bottom:16px;}.mb-24{margin-bottom:24px;}
+.flex-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+</head>
+<body>
+<a href="#main-content" class="skip-link">Skip to main content</a>
+<div id="live-region" aria-live="polite" aria-atomic="true" style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;"></div>
+
+<!-- SIGN-IN -->
+<div id="screen-signin" role="main">
+  <div class="signin-box">
+    <div class="signin-logo">
+      <div class="logo-mark" aria-hidden="true">CB</div>
+      <div>
+        <div style="font-weight:700;font-size:1.2rem;">CandyBabble Careers</div>
+        <div class="text-muted text-sm">AI Job Search &amp; Resume Tailoring</div>
+      </div>
+    </div>
+    <div class="card stack">
+      <div>
+        <h2 class="mb-8">Sign in or create account</h2>
+        <p class="text-muted">Enter your email to receive a magic link — no password needed.</p>
+      </div>
+      <div>
+        <input type="email" id="signin-email" class="signin-input" placeholder="your@email.com" aria-label="Email address" autocomplete="email">
+        <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="handleSignin()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+          Send Magic Link
+        </button>
+      </div>
+      <div style="text-align:center;color:var(--muted);font-size:.875rem;">or</div>
+      <button class="btn btn-ghost" style="width:100%;justify-content:center;" onclick="enterDemoMode()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>
+        Explore in Demo Mode
+      </button>
+    </div>
+    <div class="demo-note"><strong>Demo mode</strong> lets you explore all screens with sample data. Your inputs are not saved to a real account. Create an account when we launch for full functionality.</div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app" role="application" aria-label="CandyBabble Careers application">
+  <header class="topbar">
+    <a href="#" class="topbar-logo" aria-label="CandyBabble Careers home">
+      <div class="logo-mark" aria-hidden="true">CB</div>CandyBabble Careers
+    </a>
+    <div class="topbar-spacer"></div>
+    <span id="user-badge" class="badge badge-demo">Demo Mode</span>
+    <button class="privacy-btn" onclick="openModal()" aria-haspopup="dialog" aria-label="View privacy details">
+      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      Privacy Info
+    </button>
+    <button class="theme-btn" id="theme-cycle-btn" onclick="cycleTheme()" aria-label="Switch display theme">Dark</button>
+  </header>
+  <nav class="nav" aria-label="Main navigation">
+    <button class="nav-btn active" data-screen="dashboard" onclick="showScreen('dashboard')" aria-selected="true">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Dashboard
+    </button>
+    <button class="nav-btn" data-screen="resume" onclick="showScreen('resume')" aria-selected="false">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>My Resume
+    </button>
+    <button class="nav-btn" data-screen="rewriter" onclick="showScreen('rewriter')" aria-selected="false">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>ATS Rewriter
+    </button>
+    <button class="nav-btn" data-screen="privacy" onclick="showScreen('privacy')" aria-selected="false">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Accessibility
+    </button>
+    <button class="nav-btn" data-screen="pricing" onclick="showScreen('pricing')" aria-selected="false">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Pricing
+    </button>
+  </nav>
+  <main id="main-content" tabindex="-1">
+
+    <!-- DASHBOARD -->
+    <section id="screen-dashboard" class="screen active" aria-label="Dashboard">
+      <div class="section-header">
+        <div class="flex-row mb-8"><h2>Job Dashboard</h2><span class="badge badge-demo">Sample Data</span></div>
+        <p class="text-muted">Showing sample data. Add your resume and accessibility preferences to see real matches.</p>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="label">Jobs Scanned</div><div class="value" style="font-size:1rem;color:var(--muted);">Not active</div><div class="sub">Live search requires account</div></div>
+        <div class="stat-card"><div class="label">Sample Matches</div><div class="value">5</div><div class="sub">Demo listings below</div></div>
+        <div class="stat-card"><div class="label">Resume</div><div class="value" style="font-size:1rem;color:var(--muted);">None saved</div><div class="sub">Add in My Resume tab</div></div>
+        <div class="stat-card"><div class="label">Rewrites Saved</div><div class="value" id="rewrite-count">0</div><div class="sub">Use ATS Rewriter tab</div></div>
+      </div>
+      <div class="filter-bar" role="group" aria-label="Filter by job level">
+        <button class="filter-btn active" onclick="filterJobs('all',this)">All Levels</button>
+        <button class="filter-btn" onclick="filterJobs('entry',this)">Entry Level</button>
+        <button class="filter-btn" onclick="filterJobs('manager',this)">Manager</button>
+        <button class="filter-btn" onclick="filterJobs('executive',this)">Executive</button>
+        <button class="filter-btn" onclick="filterJobs('remote',this)">Remote Only</button>
+      </div>
+      <div id="jobs-list" class="stack" role="list" aria-label="Sample job matches"></div>
+      <p class="text-muted text-sm mt-16" style="border-top:1px solid var(--border);padding-top:16px;">Sample listings for demonstration. Live search aggregates Indeed, LinkedIn, We Work Remotely, Remote.co, FlexJobs, and local boards — requires active account.</p>
+    </section>
+
+    <!-- MY RESUME -->
+    <section id="screen-resume" class="screen" aria-label="My Resume">
+      <div class="section-header">
+        <h2 class="mb-8">My Resume</h2>
+        <p class="text-muted">Paste your resume once. The AI extracts and structures your information for review — you confirm every field before anything is saved.</p>
+      </div>
+      <div class="card stack-lg">
+        <div>
+          <h3 class="mb-8">Paste your resume text</h3>
+          <p class="text-muted text-sm mb-16">Copy your full resume and paste it below. File upload (PDF, Word, photo) is planned for a future release — paste text for now.</p>
+          <textarea class="resume-textarea" id="resume-text" placeholder="Paste your full resume text here…" aria-label="Resume text" rows="10" maxlength="20000"></textarea>
+        </div>
+        <div class="flex-row">
+          <button class="btn btn-primary" id="extract-btn" onclick="extractResume()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Extract &amp; Review
+          </button>
+          <button class="btn btn-ghost btn-sm" onclick="clearResume()">Clear</button>
+        </div>
+        <p class="text-sm text-muted">AI highlights likely fields. You review and correct each one before saving.</p>
+      </div>
+      <div id="extract-progress" style="display:none;" class="mt-16" aria-live="polite">
+        <p class="text-sm text-muted mb-8">Analyzing…</p>
+        <div class="progress-wrap"><div class="progress-fill" id="progress-fill"></div></div>
+      </div>
+      <div id="extracted-section" style="display:none;" class="card mt-24">
+        <div class="flex-row mb-16">
+          <h3>Review Extracted Information</h3>
+          <span class="badge badge-demo">AI Preview — Please Review &amp; Correct</span>
+        </div>
+        <p class="text-muted text-sm mb-16">Check every field. The AI may misread or miss information. Correct anything before saving.</p>
+        <div class="extracted-grid" id="extracted-grid"></div>
+        <hr class="divider">
+        <div class="flex-row">
+          <button class="btn btn-primary" onclick="saveResume()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            Confirm &amp; Save Resume
+          </button>
+          <span class="text-sm text-muted">Session only — cloud storage requires account.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ATS REWRITER -->
+    <section id="screen-rewriter" class="screen" aria-label="ATS Resume Rewriter">
+      <div class="section-header">
+        <div class="flex-row mb-8"><h2>ATS Resume Rewriter</h2><span class="badge badge-demo">Preview Mode</span></div>
+        <p class="text-muted">Paste a job description and one bullet. The rewriter uses Fracture &rarr; Pressure &rarr; Shift to align your experience with the posting's language naturally.</p>
+      </div>
+      <div class="card stack-lg">
+        <div>
+          <label for="job-desc" class="fw-600" style="display:block;margin-bottom:8px;">Job Description</label>
+          <textarea class="resume-textarea" id="job-desc" placeholder="Paste the full job description here…" rows="6" maxlength="10000"></textarea>
+          <p class="text-sm text-muted mt-8">The AI reads this to find keywords and required skills the employer is scanning for.</p>
+        </div>
+        <div>
+          <label for="bullet-in" class="fw-600" style="display:block;margin-bottom:8px;">Your Current Bullet</label>
+          <textarea class="resume-textarea" id="bullet-in" placeholder="e.g. Responsible for managing a customer service team." rows="3" maxlength="1000"></textarea>
+        </div>
+        <div class="flex-row">
+          <button class="btn btn-primary" id="rewrite-btn" onclick="rewriteBullet()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            Rewrite with F&#x2192;P&#x2192;S
+          </button>
+          <button class="btn btn-ghost btn-sm" onclick="clearRewriter()">Clear</button>
+        </div>
+      </div>
+      <div id="rewrite-output" style="display:none;" class="card mt-24" aria-live="polite">
+        <div class="flex-row mb-16">
+          <h3>Rewritten Output</h3>
+          <span class="badge badge-demo">Preview — add real metrics before submitting</span>
+        </div>
+        <div class="rewriter-grid">
+          <div>
+            <p class="text-sm text-muted fw-600 mb-8">Original</p>
+            <div id="orig-display" class="fps-line" style="background:rgba(255,255,255,.02);border-left:3px solid var(--border);"></div>
+          </div>
+          <div>
+            <p class="text-sm fw-600 mb-8" style="color:#60a5fa;">Rewritten (F&#x2192;P&#x2192;S)</p>
+            <div class="fps-line fps-fracture"><div class="fps-label">Fracture — The Challenge</div><div id="fps-f-text"></div></div>
+            <div class="fps-line fps-pressure"><div class="fps-label">Pressure — The Action</div><div id="fps-p-text"></div></div>
+            <div class="fps-line fps-shift"><div class="fps-label">Shift — The Result</div><div id="fps-s-text"></div></div>
+          </div>
+        </div>
+        <hr class="divider">
+        <div id="combined-bullet" style="background:rgba(37,99,235,.06);border:1px solid rgba(37,99,235,.2);border-radius:8px;padding:16px;margin-bottom:16px;font-size:.9375rem;line-height:1.7;"></div>
+        <div class="flex-row">
+          <button class="btn btn-primary btn-sm" onclick="copyBullet()">Copy Bullet</button>
+          <button class="btn btn-ghost btn-sm" onclick="saveRewrite()">Save Version</button>
+          <span class="text-sm text-muted">Always add your own real numbers before submitting.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ACCESSIBILITY PROFILE -->
+    <section id="screen-privacy" class="screen" aria-label="Accessibility Profile">
+      <div class="section-header">
+        <h2 class="mb-8">Accessibility Profile</h2>
+        <p class="text-muted">Select any needs that apply to help us prioritize job listings. All selections are optional and entirely under your control.</p>
+      </div>
+      <div class="privacy-notice mb-16">
+        <h3>
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          How this information is used
+        </h3>
+        <p class="text-sm" style="color:var(--muted);line-height:1.75;">Your accessibility preferences are used only to help filter and prioritize job listings. They are never included on employer-facing resumes, never shared with employers, and never sold to third parties. You remain in control — update or clear your selections at any time. Filtering may be imperfect and you can always override any recommendation. Account-based data protections using Supabase Row Level Security are being implemented before public launch.</p>
+      </div>
+      <div class="card stack-lg">
+        <div>
+          <h3 class="mb-16">Select any that apply (optional)</h3>
+          <div class="chips-grid" id="disability-chips" role="group" aria-label="Accessibility needs"></div>
+        </div>
+        <div>
+          <label for="custom-restrict" class="fw-600 text-sm" style="display:block;margin-bottom:8px;">Anything else to consider? (optional)</label>
+          <textarea class="resume-textarea" id="custom-restrict" rows="3" placeholder="e.g. need fully remote, require flexible hours, cannot travel…" style="min-height:80px;" maxlength="500"></textarea>
+        </div>
+        <div class="flex-row">
+          <button class="btn btn-primary" onclick="savePrivacy()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            Save Preferences
+          </button>
+          <button class="btn btn-ghost btn-sm" onclick="clearPrivacy()">Clear All</button>
+        </div>
+        <p class="text-sm text-muted">Saved to this session. Account required for cloud storage.</p>
+      </div>
+    </section>
+
+    <!-- PRICING -->
+    <section id="screen-pricing" class="screen" aria-label="Pricing">
+      <div class="section-header">
+        <div class="flex-row mb-8"><h2>Plans &amp; Pricing</h2><span class="badge badge-demo">Early Access — Billing not yet live</span></div>
+        <p class="text-muted">Join the waitlist for your tier. You'll be notified when billing goes live — no obligation to purchase.</p>
+      </div>
+      <div class="privacy-notice mb-24">
+        <h3>
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Accessibility preferences are intended for private filtering only — never included in employer-facing resumes.
+        </h3>
+      </div>
+      <div class="pricing-grid">
+        <div class="price-card">
+          <div><h3 class="mb-8">Entry Level</h3><p class="text-muted text-sm">For job seekers entering or re-entering the workforce</p></div>
+          <div class="price-amount">$15<span>–$25/mo</span></div>
+          <ul class="price-features">
+            <li>Resume paste &amp; AI extraction</li><li>Accessibility filtering (private)</li><li>Job match scoring</li>
+            <li>ATS rewriter — 10 versions/mo</li><li>Remote + local job search</li><li>Dashboard</li>
+          </ul>
+          <button class="btn btn-ghost" onclick="joinWaitlist('entry')">Join Waitlist</button>
+        </div>
+        <div class="price-card featured">
+          <div class="flex-row mb-8"><h3>Manager / Director</h3><span class="badge badge-blue">Popular</span></div>
+          <p class="text-muted text-sm">For professionals moving into leadership roles</p>
+          <div class="price-amount">$49<span>/mo</span></div>
+          <ul class="price-features">
+            <li>Everything in Entry</li><li>Unlimited ATS rewrites</li><li>Manager-level keyword strategy</li>
+            <li>P&amp;L, KPI, cross-functional targeting</li><li>Priority job matching</li><li>Leadership summary generation</li>
+          </ul>
+          <button class="btn btn-primary" onclick="joinWaitlist('manager')">Join Waitlist</button>
+        </div>
+        <div class="price-card">
+          <div><h3 class="mb-8">VP / C-Suite / Executive</h3><p class="text-muted text-sm">For senior leaders seeking board-level roles</p></div>
+          <div class="price-amount">$99<span>–$199/mo</span></div>
+          <ul class="price-features">
+            <li>Everything in Manager</li><li>C-suite tone calibration</li><li>Board-level keyword targeting</li>
+            <li>Revenue growth narrative framing</li><li>Strategic vision positioning</li><li>Priority match alerts</li>
+          </ul>
+          <button class="btn btn-ghost" onclick="joinWaitlist('executive')">Join Waitlist</button>
+        </div>
+      </div>
+      <p class="text-sm text-muted mt-24" style="border-top:1px solid var(--border);padding-top:16px;">Pricing is indicative and subject to change. Joining the waitlist does not commit you to a purchase. Full privacy policy, terms of service, and data documentation will be published before billing goes live.</p>
+    </section>
+
+  </main>
+</div>
+
+<!-- PRIVACY MODAL -->
+<div class="modal-overlay" id="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal" id="modal-box">
+    <button class="modal-close" onclick="closeModal()" aria-label="Close">&times;</button>
+    <h2 id="modal-title" class="mb-16">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:8px;" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      How Your Data Is Used
+    </h2>
+    <div class="stack text-sm" style="color:var(--muted);line-height:1.8;">
+      <p><strong style="color:var(--text);">Accessibility preferences</strong> are used only to help filter and prioritize job listings. They are not included in any employer-facing resume and are not shared with employers, third parties, or advertisers.</p>
+      <p><strong style="color:var(--text);">Resume data</strong> you save is stored in your personal account and used only to generate tailored resume versions. It is not shared or sold.</p>
+      <p><strong style="color:var(--text);">Data protections</strong> using Supabase Row Level Security are being implemented so your data is accessible only under your own credentials. Technical documentation will be published before launch.</p>
+      <p><strong style="color:var(--text);">You remain in control.</strong> All selections are optional. You can update, clear, or request deletion of any data at any time.</p>
+      <p><strong style="color:var(--text);">This product is in early development.</strong> Full privacy policy, terms of service, and data retention documentation are being prepared for publication before general launch.</p>
+      <hr class="divider">
+      <p>Questions or privacy requests: <a href="mailto:jerome7207@gmail.com" style="color:var(--accent);">jerome7207@gmail.com</a></p>
+    </div>
+  </div>
+</div>
+
+<footer style="text-align:center;padding:24px;border-top:1px solid #1e293b;font-size:.8125rem;color:#94a3b8;"><div id="toast"#169; 2026 CandyBabble LLC <div id="toast"nbsp;<div id="toast"middot;<div id="toast"nbsp; <a href="candybabble_privacy_policy.html" style="color:#2563eb;">Privacy Policy</a> <div id="toast"nbsp;<div id="toast"middot;<div id="toast"nbsp; <a href="mailto:jerome7207@gmail.com" style="color:#2563eb;">Contact</a></footer>
+<div id="toast" role="alert" aria-live="assertive"></div>
+
+<script>
+'use strict';
+var SUPA_URL='https://alognutzsyqtnarzpqoo.supabase.co';
+var SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFsb2dudXR6c3lxdG5hcnpwcW9vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg2MjQ4MDgsImV4cCI6MjA4NDIwMDgwOH0.eY56AMKR_O5LkYJsYmG978SaCkwCxPxax2emkg0hw-Y';
+var sb=window.supabase.createClient(SUPA_URL,SUPA_KEY);
+var currentUser=null;
+var STATE={theme:localStorage.getItem('cb_theme')||'dark',screen:'dashboard',selectedNeeds:new Set(),resumeText:'',extracted:{},savedRewrites:0,isDemoMode:false};
+var THEMES=['dark','dyslexia','high-contrast'];
+var THEME_LABELS={dark:'Dark',dyslexia:'Dyslexia','high-contrast':'Hi-Contrast'};
+var NEEDS=[
+  {id:'wheelchair',label:'Wheelchair user'},{id:'one-arm',label:'One arm / limb difference'},
+  {id:'one-handed',label:'One-handed navigation'},{id:'dyslexia',label:'Dyslexia'},
+  {id:'low-vision',label:'Low vision / visual impairment'},{id:'blind',label:'Blind / screen reader user'},
+  {id:'cognitive',label:'Cognitive disability'},{id:'hearing',label:'Deaf / hard of hearing'},
+  {id:'mobility',label:'Mobility limitation'},{id:'tremor',label:'Tremor / motor impairment'},
+  {id:'chronic-pain',label:'Chronic pain / fatigue'},{id:'tbi',label:'TBI / neurological'}
+];
+var SAMPLE_JOBS=[
+  {id:1,title:'Remote Content Strategist',company:'Brightfield Media',location:'Remote',level:'manager',score:91,tags:['Remote','Content','Strategy']},
+  {id:2,title:'Accessibility UX Researcher',company:'Inclusive Design Co.',location:'Remote',level:'manager',score:87,tags:['Remote','UX Research','A11y']},
+  {id:3,title:'Data Entry Coordinator',company:'National Services Group',location:'Remote',level:'entry',score:82,tags:['Remote','Data Entry','Flexible hours']},
+  {id:4,title:'VP, Digital Operations',company:'Summit Ventures',location:'Remote / Hybrid',level:'executive',score:79,tags:['Executive','Operations','Leadership']},
+  {id:5,title:'Customer Success Representative',company:'CloudBase Inc.',location:'Remote',level:'entry',score:74,tags:['Remote','Customer Success','SaaS']}
+];
+function applyTheme(t){document.documentElement.setAttribute('data-theme',t==='dark'?'':t);STATE.theme=t;localStorage.setItem('cb_theme',t);var b=document.getElementById('theme-cycle-btn');if(b)b.textContent=THEME_LABELS[t];announce('Theme: '+THEME_LABELS[t]);}
+function cycleTheme(){var n=THEMES[(THEMES.indexOf(STATE.theme)+1)%THEMES.length];applyTheme(n);}
+function handleSignin(){
+  var email=document.getElementById('signin-email').value.trim();
+  if(!email||!email.includes('@')){toast('Please enter a valid email address.','error');return;}
+  var btn=document.querySelector('#screen-signin .btn-primary');
+  if(btn){btn.disabled=true;btn.textContent='Sending...';}
+  sb.auth.signInWithOtp({email:email,options:{emailRedirectTo:window.location.href}})
+    .then(function(res){
+      if(res.error){toast('Error: '+res.error.message,'error');if(btn){btn.disabled=false;btn.textContent='Send Magic Link';}}
+      else{toast('Magic link sent! Check your inbox.','success');if(btn)btn.textContent='Check your email!';}
+    });
+}
+function enterDemoMode(){
+  STATE.isDemoMode=true;
+  document.getElementById('screen-signin').style.display='none';
+  document.getElementById('app').style.display='flex';
+  updateUserBadge(null);renderChips();renderJobs('all');
+  requestAnimationFrame(function(){showScreen('dashboard');});
+}
+function signOut(){
+  if(STATE.isDemoMode){STATE.isDemoMode=false;document.getElementById('app').style.display='none';document.getElementById('screen-signin').style.display='flex';return;}
+  sb.auth.signOut().then(function(){currentUser=null;document.getElementById('app').style.display='none';document.getElementById('screen-signin').style.display='flex';});
+}
+function updateUserBadge(user){
+  var b=document.getElementById('user-badge');if(!b)return;
+  if(user){b.className='badge badge-green';b.textContent=user.email;b.style.cursor='pointer';b.title='Click to sign out';b.onclick=signOut;}
+  else if(STATE.isDemoMode){b.className='badge badge-demo';b.textContent='Demo Mode';b.style.cursor='pointer';b.title='Exit demo';b.onclick=signOut;}
+  else{b.className='badge badge-demo';b.textContent='Demo Mode';b.onclick=null;}
+}
+function launchApp(user){
+  currentUser=user;
+  document.getElementById('screen-signin').style.display='none';
+  document.getElementById('app').style.display='flex';
+  updateUserBadge(user);renderChips();
+  if(user)loadUserData();
+  renderJobs('all');
+  requestAnimationFrame(function(){showScreen('dashboard');});
+}
+function loadUserData(){
+  if(!currentUser)return;
+  sb.from('disability_profiles').select('accessibility_needs,custom_restrictions').eq('user_id',currentUser.id).single()
+    .then(function(res){
+      if(res.data&&res.data.accessibility_needs){res.data.accessibility_needs.forEach(function(id){STATE.selectedNeeds.add(id);});renderChips();}
+      if(res.data&&res.data.custom_restrictions){var el=document.getElementById('custom-restrict');if(el)el.value=res.data.custom_restrictions;}
+    });
+  sb.from('ats_rewrites').select('id',{count:'exact',head:true}).eq('user_id',currentUser.id)
+    .then(function(res){if(res.count!=null){STATE.savedRewrites=res.count;var c=document.getElementById('rewrite-count');if(c)c.textContent=res.count;}});
+}
+function showScreen(id){document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active','visible');});document.querySelectorAll('.nav-btn').forEach(function(b){var active=b.dataset.screen===id;b.classList.toggle('active',active);b.setAttribute('aria-selected',active?'true':'false');});var t=document.getElementById('screen-'+id);if(!t)return;t.classList.add('active');STATE.screen=id;requestAnimationFrame(function(){requestAnimationFrame(function(){t.classList.add('visible');});});var m=document.getElementById('main-content');if(m)m.focus({preventScroll:false});announce(id.charAt(0).toUpperCase()+id.slice(1)+' screen');}
+function renderJobs(filter){var list=document.getElementById('jobs-list');var jobs=SAMPLE_JOBS;if(filter==='remote')jobs=jobs.filter(function(j){return j.location.toLowerCase().includes('remote');});else if(filter!=='all')jobs=jobs.filter(function(j){return j.level===filter;});list.innerHTML='';if(!jobs.length){list.innerHTML='<p class="text-muted">No sample jobs match this filter.</p>';return;}jobs.forEach(function(j){var c=document.createElement('article');c.className='job-card';c.setAttribute('role','listitem');c.innerHTML='<div class="job-score">'+j.score+'%</div><div class="job-info"><div class="job-title">'+j.title+'</div><div class="job-meta">'+j.company+' &middot; '+j.location+'</div><div class="job-tags"><span class="badge badge-demo" style="font-size:.7rem;">Sample</span>'+j.tags.map(function(t){return'<span class="job-tag">'+t+'</span>';}).join('')+'</div></div><div style="flex-shrink:0;"><button class="btn btn-primary btn-sm" onclick="toast('Live apply links coming at launch.','info')">Apply</button></div>';list.appendChild(c);});}
+function filterJobs(filter,btn){document.querySelectorAll('.filter-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');renderJobs(filter);}
+function extractResume(){var text=document.getElementById('resume-text').value.trim();if(!text){toast('Paste your resume text first.','error');return;}if(text.length<50){toast('Resume text seems too short.','error');return;}var btn=document.getElementById('extract-btn');btn.disabled=true;btn.textContent='Analyzing...';var prog=document.getElementById('extract-progress');var fill=document.getElementById('progress-fill');prog.style.display='block';fill.style.width='0%';announce('Extracting, please wait.');var pct=0;var iv=setInterval(function(){pct=Math.min(pct+Math.random()*18,90);fill.style.width=pct+'%';},220);setTimeout(function(){clearInterval(iv);fill.style.width='100%';setTimeout(function(){prog.style.display='none';btn.disabled=false;btn.textContent='Extract & Review';var lines=text.split(/
++/).map(function(l){return l.trim();}).filter(Boolean);var em=text.match(/[\w.+-]+@[\w-]+\.[a-z]{2,}/i);var pm=text.match(/(\(?\d{3}\)?[\s.\-]?\d{3}[\s.\-]?\d{4})/);STATE.extracted={'Full Name':{val:lines[0]||'',note:'Verify'},'Email':{val:em?em[0]:'',note:em?'':'Not detected'},'Phone':{val:pm?pm[0]:'',note:pm?'':'Not detected'},'Top Skills':{val:'',note:'Add from your resume'},'Most Recent Title':{val:'',note:'Fill in'}};renderExtracted();document.getElementById('extracted-section').style.display='block';toast('Review each field and correct before saving.','success');},300);},2200);}
+function renderExtracted(){var g=document.getElementById('extracted-grid');g.innerHTML='';Object.entries(STATE.extracted).forEach(function(e){var fn=e[0],d=e[1];var w=document.createElement('div');w.className='extracted-field';var uid='field-'+fn.replace(/\s+/g,'-').toLowerCase();w.innerHTML='<label for="'+uid+'">'+fn+(d.note?' <span style="font-weight:400;color:var(--muted);text-transform:none;">('+d.note+')</span>':'')+'</label><input type="text" id="'+uid+'" value="'+(d.val||'')+'" aria-label="'+fn+'">';g.appendChild(w);});}
+function saveResume(){
+  STATE.resumeText=document.getElementById('resume-text').value;
+  if(!currentUser){toast('Resume saved to this session. Create an account to save permanently.','success');return;}
+  var fields={};document.querySelectorAll('#extracted-grid input').forEach(function(inp){fields[inp.getAttribute('aria-label')]=inp.value;});
+  var btn=document.querySelector('#extracted-section .btn-primary');if(btn){btn.disabled=true;btn.textContent='Saving...';}
+  sb.from('resumes').upsert({user_id:currentUser.id,raw_text:STATE.resumeText,structured_data:fields,updated_at:new Date().toISOString()},{onConflict:'user_id'})
+    .then(function(res){if(btn){btn.disabled=false;btn.textContent='Confirm & Save Resume';}if(res.error){toast('Save failed: '+res.error.message,'error');}else{toast('Resume saved to your account.','success');}});
+}
+function clearResume(){document.getElementById('resume-text').value='';document.getElementById('extracted-section').style.display='none';STATE.extracted={};}
+function rewriteBullet(){var jd=document.getElementById('job-desc').value.trim();var b=document.getElementById('bullet-in').value.trim();if(!jd){toast('Paste a job description first.','error');return;}if(!b){toast('Enter a resume bullet.','error');return;}var btn=document.getElementById('rewrite-btn');btn.disabled=true;btn.textContent='Rewriting...';var words=jd.split(/\s+/).filter(function(w){return w.length>5;}).slice(0,8).map(function(w){return w.replace(/[^a-zA-Z]/g,'');}).filter(Boolean);var kw1=words[0]||'team objectives';var kw2=words[1]||'stakeholder priorities';var core=b.replace(/^(responsible for |managed |led |handled |worked on |assisted with )/i,'');var frac='Inherited '+core.toLowerCase()+' with no established process or performance baseline.';var pres='Restructured the approach to align with '+kw1+' and '+kw2+', delivering consistent results under operational constraints.';var shift='Improved team outcomes measurably — add your specific numbers here before submitting.';var comb=frac+' '+pres+' '+shift;setTimeout(function(){document.getElementById('orig-display').textContent=b;document.getElementById('fps-f-text').textContent=frac;document.getElementById('fps-p-text').textContent=pres;document.getElementById('fps-s-text').textContent=shift;document.getElementById('combined-bullet').textContent=comb;document.getElementById('rewrite-output').style.display='block';btn.disabled=false;btn.textContent='Rewrite with F→P→S';toast('Preview ready. Add your real numbers before submitting.','success');},900);}
+function copyBullet(){var txt=document.getElementById('combined-bullet').textContent;if(!txt)return;navigator.clipboard.writeText(txt).then(function(){toast('Copied.','success');}).catch(function(){toast('Copy failed — select manually.','error');});}
+function saveRewrite(){
+  STATE.savedRewrites++;var c=document.getElementById('rewrite-count');if(c)c.textContent=STATE.savedRewrites;
+  if(!currentUser){toast('Saved to this session. Create an account to save permanently.','success');return;}
+  var orig=document.getElementById('bullet-in').value.trim();
+  var comb=document.getElementById('combined-bullet').textContent;
+  sb.from('ats_rewrites').insert({user_id:currentUser.id,job_id:null,original_bullet:orig,
+    fps_fracture:document.getElementById('fps-f-text').textContent,
+    fps_pressure:document.getElementById('fps-p-text').textContent,
+    fps_shift:document.getElementById('fps-s-text').textContent,
+    tailored_bullet:comb})
+    .then(function(res){if(res.error){toast('Could not save: '+res.error.message,'error');}else{toast('Rewrite saved to your account.','success');}});
+}
+function clearRewriter(){document.getElementById('job-desc').value='';document.getElementById('bullet-in').value='';document.getElementById('rewrite-output').style.display='none';}
+function renderChips(){var cont=document.getElementById('disability-chips');if(!cont)return;cont.innerHTML='';NEEDS.forEach(function(n){var btn=document.createElement('button');btn.type='button';btn.className='chip'+(STATE.selectedNeeds.has(n.id)?' selected':'');btn.textContent=n.label;btn.setAttribute('aria-pressed',STATE.selectedNeeds.has(n.id)?'true':'false');btn.addEventListener('click',function(){toggleNeed(n.id,btn);});cont.appendChild(btn);});}
+function toggleNeed(id,btn){if(STATE.selectedNeeds.has(id)){STATE.selectedNeeds.delete(id);btn.classList.remove('selected');btn.setAttribute('aria-pressed','false');}else{STATE.selectedNeeds.add(id);btn.classList.add('selected');btn.setAttribute('aria-pressed','true');}}
+function savePrivacy(){
+  var custom=document.getElementById('custom-restrict').value.trim();
+  if(!currentUser){toast('Preferences saved to this session. Create an account to save permanently.','success');return;}
+  var needs=Array.from(STATE.selectedNeeds);
+  sb.from('disability_profiles').upsert({user_id:currentUser.id,accessibility_needs:needs,custom_restrictions:custom,is_tracked:false},{onConflict:'user_id'})
+    .then(function(res){if(res.error){toast('Could not save: '+res.error.message,'error');}else{toast('Accessibility preferences saved to your account.','success');}});
+}
+function clearPrivacy(){STATE.selectedNeeds.clear();document.getElementById('custom-restrict').value='';renderChips();}
+function joinWaitlist(tier){toast('Email jerome7207@gmail.com with "'+tier+' waitlist" to be notified at launch.','info');}
+var lastFocused=null;
+function openModal(){lastFocused=document.activeElement;var o=document.getElementById('modal-overlay');o.classList.add('open');var f=o.querySelectorAll('button,a[href],input,[tabindex="0"]');if(f.length)f[0].focus();o.addEventListener('keydown',trapFocus);document.addEventListener('keydown',escapeClose);}
+function closeModal(){var o=document.getElementById('modal-overlay');o.classList.remove('open');o.removeEventListener('keydown',trapFocus);document.removeEventListener('keydown',escapeClose);if(lastFocused)lastFocused.focus();}
+function escapeClose(e){if(e.key==='Escape')closeModal();}
+function trapFocus(e){if(e.key!=='Tab')return;var box=document.getElementById('modal-box');var els=Array.from(box.querySelectorAll('button,a[href],input,[tabindex="0"]')).filter(function(el){return!el.disabled;});if(!els.length)return;var first=els[0],last=els[els.length-1];if(e.shiftKey){if(document.activeElement===first){e.preventDefault();last.focus();}}else{if(document.activeElement===last){e.preventDefault();first.focus();}}}
+document.getElementById('modal-overlay').addEventListener('click',function(e){if(e.target===document.getElementById('modal-overlay'))closeModal();});
+var toastTimer=null;
+function toast(msg,type){type=type||'success';var el=document.getElementById('toast');el.textContent=msg;el.className='show '+(type||'');if(toastTimer)clearTimeout(toastTimer);toastTimer=setTimeout(function(){el.className='';},4000);}
+function announce(msg){var el=document.getElementById('live-region');el.textContent='';requestAnimationFrame(function(){el.textContent=msg;});}
+(function init(){
+  var saved=localStorage.getItem('cb_theme')||'dark';STATE.theme=saved;
+  if(saved!=='dark')document.documentElement.setAttribute('data-theme',saved);
+  var btn=document.getElementById('theme-cycle-btn');if(btn)btn.textContent=THEME_LABELS[saved]||saved;
+  sb.auth.getSession().then(function(res){
+    if(res.data&&res.data.session&&res.data.session.user){launchApp(res.data.session.user);}
+  });
+  sb.auth.onAuthStateChange(function(event,session){
+    if(event==='SIGNED_IN'&&session&&session.user){launchApp(session.user);}
+    else if(event==='SIGNED_OUT'){currentUser=null;document.getElementById('app').style.display='none';document.getElementById('screen-signin').style.display='flex';}
+  });
+}());
+</script>
+</body>
+</html>
