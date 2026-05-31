@@ -226,16 +226,23 @@ main{flex:1;padding:32px 24px;max-width:920px;margin:0 auto;width:100%;}
         </div>
         <p class="text-muted" id="dash-subtitle">Showing sample data. Add your resume and accessibility preferences to see real matches.</p>
       </div>
+      <div class="flex-row mb-16" id="search-bar" style="display:none;">
+        <input type="text" id="job-search-input" class="signin-input" style="margin:0;flex:1;" placeholder="Search by skill, title, or keyword…" aria-label="Job search keywords">
+        <button class="btn btn-primary" onclick="searchJobs()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Search Jobs
+        </button>
+      </div>
       <div class="stats-grid">
         <div class="stat-card">
-          <div class="label">Jobs Scanned</div>
-          <div class="value" style="font-size:1rem;color:var(--muted);" id="stat-jobs">Not active</div>
-          <div class="sub">Live search coming soon</div>
+          <div class="label">Jobs Found</div>
+          <div class="value" id="stat-jobs" style="font-size:1rem;color:var(--muted);">—</div>
+          <div class="sub" id="stat-jobs-sub">Search to see live results</div>
         </div>
         <div class="stat-card">
-          <div class="label">Sample Matches</div>
-          <div class="value">5</div>
-          <div class="sub">Demo listings below</div>
+          <div class="label">Matches Shown</div>
+          <div class="value" id="stat-matches">—</div>
+          <div class="sub">Top results for you</div>
         </div>
         <div class="stat-card">
           <div class="label">Resume</div>
@@ -345,10 +352,11 @@ main{flex:1;padding:32px 24px;max-width:920px;margin:0 auto;width:100%;}
         </div>
         <hr class="divider">
         <div id="combined-bullet" style="background:rgba(37,99,235,.06);border:1px solid rgba(37,99,235,.2);border-radius:8px;padding:16px;margin-bottom:16px;font-size:.9375rem;line-height:1.7;"></div>
+        <div id="rewrite-keywords" class="flex-row mb-8" style="display:none;flex-wrap:wrap;gap:6px;align-items:center;"></div>
         <div class="flex-row">
           <button class="btn btn-primary btn-sm" onclick="copyBullet()">Copy Bullet</button>
           <button class="btn btn-ghost btn-sm" onclick="saveRewrite()">Save Version</button>
-          <span class="text-sm text-muted">Always add your real numbers before submitting.</span>
+          <span class="text-sm text-muted">Fill in [X%] and [N] with your real numbers before submitting.</span>
         </div>
       </div>
     </section>
@@ -579,7 +587,11 @@ function showApp(isLoggedIn) {
     if (resumeSaveNote) resumeSaveNote.textContent = 'Saved to your account.';
     if (privacySaveNote) privacySaveNote.textContent = 'Preferences saved to your account.';
     if (dashDemoBadge) dashDemoBadge.style.display = 'none';
-    if (dashSubtitle) dashSubtitle.textContent = 'Your job dashboard. Add your resume to see personalized matches.';
+    if (dashSubtitle) dashSubtitle.textContent = 'Search live jobs. Your accessibility preferences filter results privately.';
+    var searchBar = document.getElementById('search-bar');
+    if (searchBar) searchBar.style.display = 'flex';
+    // Auto-search on login
+    searchJobs();
   } else {
     // Demo mode
     demoBadge.style.display = 'inline-flex';
@@ -677,6 +689,60 @@ function showScreen(id) {
   var m = document.getElementById('main-content');
   if (m) m.focus({preventScroll: false});
   announce(id.charAt(0).toUpperCase() + id.slice(1) + ' screen');
+}
+
+/* ─── LIVE JOB SEARCH ─────────────────────────────────────────────────── */
+async function searchJobs() {
+  var input = document.getElementById('job-search-input');
+  var keywords = input ? input.value.trim().split(/[\s,]+/).filter(Boolean) : [];
+  var activeFilter = document.querySelector('.filter-btn.active');
+  var level = activeFilter ? activeFilter.textContent.trim().toLowerCase().replace(' only','').replace(' level','') : 'all';
+  if (level === 'all levels') level = 'all';
+  if (level === 'remote') level = 'all';
+  var remoteOnly = activeFilter && activeFilter.textContent.includes('Remote');
+
+  var list = document.getElementById('jobs-list');
+  list.innerHTML = '<p class="text-muted">Searching live jobs…</p>';
+
+  var statJobs = document.getElementById('stat-jobs');
+  var statMatches = document.getElementById('stat-matches');
+  if (statJobs) statJobs.textContent = '…';
+
+  try {
+    var res = await sb.functions.invoke('job-search', {
+      body: { keywords, level, remoteOnly }
+    });
+    if (res.error) throw res.error;
+    var data = res.data;
+    var jobs = data.jobs || [];
+
+    if (statJobs) { statJobs.textContent = data.total || jobs.length; statJobs.style.fontSize = '1.75rem'; statJobs.style.color = 'var(--text)'; }
+    if (statMatches) statMatches.textContent = jobs.length;
+
+    renderLiveJobs(jobs);
+  } catch(err) {
+    list.innerHTML = '<p class="text-muted">Search failed — ' + (err.message || 'try again') + '</p>';
+    toast('Job search failed: ' + (err.message || 'Unknown error'), 'error');
+  }
+}
+
+function renderLiveJobs(jobs) {
+  var list = document.getElementById('jobs-list');
+  list.innerHTML = '';
+  if (!jobs.length) { list.innerHTML = '<p class="text-muted">No jobs found — try different keywords.</p>'; return; }
+  jobs.forEach(function(j) {
+    var c = document.createElement('article');
+    c.className = 'job-card';
+    c.setAttribute('role', 'listitem');
+    var tags = (j.tags || []).slice(0, 4).map(function(t) { return '<span class="job-tag">' + t + '</span>'; }).join('');
+    var sourceBadge = '<span class="badge badge-green" style="font-size:.7rem;">' + (j.source || 'Live') + '</span>';
+    c.innerHTML = '<div class="job-score" aria-label="Match score ' + j.score + ' percent">' + j.score + '%</div>'
+      + '<div class="job-info"><div class="job-title">' + j.title + '</div>'
+      + '<div class="job-meta">' + j.company + ' &middot; ' + j.location + '</div>'
+      + '<div class="job-tags">' + sourceBadge + tags + '</div></div>'
+      + '<div style="flex-shrink:0;"><a href="' + j.url + '" target="_blank" rel="noopener" class="btn btn-primary btn-sm" aria-label="Apply for ' + j.title + '">Apply</a></div>';
+    list.appendChild(c);
+  });
 }
 
 /* ─── JOBS ────────────────────────────────────────────────────────────── */
@@ -803,35 +869,70 @@ function clearResume() {
 }
 
 /* ─── ATS REWRITER ────────────────────────────────────────────────────── */
-function rewriteBullet() {
+async function rewriteBullet() {
   var jd = document.getElementById('job-desc').value.trim();
   var b = document.getElementById('bullet-in').value.trim();
   if (!jd) { toast('Paste a job description first.', 'error'); return; }
   if (!b) { toast('Enter a resume bullet to rewrite.', 'error'); return; }
   var btn = document.getElementById('rewrite-btn');
-  btn.disabled = true; btn.textContent = 'Rewriting…';
-  announce('Generating rewrite…');
-  var words = jd.split(/\s+/).filter(function(w) { return w.length > 5; }).slice(0, 8)
-    .map(function(w) { return w.replace(/[^a-zA-Z]/g, ''); }).filter(Boolean);
-  var kw1 = words[0] || 'team objectives';
-  var kw2 = words[1] || 'stakeholder priorities';
-  var core = b.replace(/^(responsible for |managed |led |handled |worked on |assisted with )/i, '');
-  var frac = 'Inherited ' + core.toLowerCase() + ' with no established process or performance baseline.';
-  var pres = 'Restructured the approach to align with ' + kw1 + ' and ' + kw2 + ', delivering consistent results under real operational constraints.';
-  var shift = 'Improved team outcomes measurably — add your specific numbers and metrics here before submitting.';
-  var comb = frac + ' ' + pres + ' ' + shift;
-  setTimeout(function() {
+  btn.disabled = true;
+  btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>AI Rewriting…';
+  announce('Sending to AI, please wait…');
+
+  try {
+    var result;
+
+    if (STATE.user) {
+      // Logged in — call real Claude AI via Supabase edge function
+      var res = await sb.functions.invoke('ats-rewrite', {
+        body: { jobDescription: jd, bullet: b }
+      });
+      if (res.error) throw res.error;
+      result = res.data;
+    } else {
+      // Demo mode — use template fallback
+      var words = jd.split(/\s+/).filter(function(w) { return w.length > 5; }).slice(0, 8)
+        .map(function(w) { return w.replace(/[^a-zA-Z]/g, ''); }).filter(Boolean);
+      var kw1 = words[0] || 'team objectives';
+      var kw2 = words[1] || 'stakeholder priorities';
+      var core = b.replace(/^(responsible for |managed |led |handled |worked on |assisted with )/i, '');
+      result = {
+        fracture: 'Inherited ' + core.toLowerCase() + ' with no established process or performance baseline.',
+        pressure: 'Restructured the approach to align with ' + kw1 + ' and ' + kw2 + ', delivering consistent results under real operational constraints.',
+        shift: 'Improved team outcomes measurably — add your specific numbers and metrics here before submitting.',
+        combined: '',
+        keywords: [kw1, kw2]
+      };
+      result.combined = result.fracture + ' ' + result.pressure + ' ' + result.shift;
+    }
+
     document.getElementById('orig-display').textContent = b;
-    document.getElementById('fps-f-text').textContent = frac;
-    document.getElementById('fps-p-text').textContent = pres;
-    document.getElementById('fps-s-text').textContent = shift;
-    document.getElementById('combined-bullet').textContent = comb;
+    document.getElementById('fps-f-text').textContent = result.fracture;
+    document.getElementById('fps-p-text').textContent = result.pressure;
+    document.getElementById('fps-s-text').textContent = result.shift;
+    document.getElementById('combined-bullet').textContent = result.combined;
+
+    // Show keywords if returned
+    if (result.keywords && result.keywords.length) {
+      var kwBadges = result.keywords.map(function(k) {
+        return '<span class="job-tag">' + k + '</span>';
+      }).join('');
+      var kwEl = document.getElementById('rewrite-keywords');
+      if (kwEl) { kwEl.innerHTML = '<span class="text-sm text-muted" style="margin-right:8px;">Keywords used:</span>' + kwBadges; kwEl.style.display = 'flex'; }
+    }
+
     document.getElementById('rewrite-output').style.display = 'block';
     btn.disabled = false;
     btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Rewrite with F→P→S';
-    announce('Rewrite complete. Add your real metrics before submitting.');
-    toast('Preview ready. Add your actual numbers before submitting.', 'success');
-  }, 900);
+    var note = STATE.user ? 'AI rewrite complete. Fill in [X%] and [N] with your real numbers.' : 'Demo preview. Sign in for real AI rewriting.';
+    announce(note);
+    toast(note, 'success');
+
+  } catch(err) {
+    btn.disabled = false;
+    btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Rewrite with F→P→S';
+    toast('Rewrite failed: ' + (err.message || 'Unknown error'), 'error');
+  }
 }
 
 function copyBullet() {
