@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=OpenDyslexic:wght@400;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://js.stripe.com/v3/"></script>
   <style>
 :root{--bg:#060c14;--bg-card:rgba(255,255,255,0.03);--border:#1e293b;--accent:#2563eb;--accent-hover:#1d4ed8;--text:#f8fafc;--muted:#94a3b8;--radius:16px;--radius-sm:8px;--success:#22c55e;--warning:#f59e0b;--error:#ef4444;--font:'Inter',system-ui,sans-serif;}
 [data-theme="dyslexia"]{--bg:#f5f0e8;--bg-card:rgba(0,0,0,0.04);--border:#d1c9b8;--accent:#1e40af;--accent-hover:#1e3a8a;--text:#1a1a1a;--muted:#555;--font:'OpenDyslexic',sans-serif;font-size:18px;letter-spacing:.05em;line-height:1.9;}
@@ -398,8 +399,8 @@ main{flex:1;padding:32px 24px;max-width:920px;margin:0 auto;width:100%;}
     <!-- PRICING -->
     <section id="screen-pricing" class="screen" aria-label="Pricing">
       <div class="section-header">
-        <div class="flex-row mb-8"><h2>Plans &amp; Pricing</h2><span class="badge badge-demo">Early Access — Billing not yet live</span></div>
-        <p class="text-muted">Join the waitlist for your tier. You'll be notified when billing goes live — no obligation to purchase.</p>
+        <div class="flex-row mb-8"><h2>Plans &amp; Pricing</h2><span class="badge badge-blue">Live — Subscribe Now</span></div>
+        <p class="text-muted">Choose your plan and subscribe securely via Stripe. Cancel anytime.</p>
       </div>
       <div class="privacy-notice mb-24">
         <h3>
@@ -410,34 +411,56 @@ main{flex:1;padding:32px 24px;max-width:920px;margin:0 auto;width:100%;}
       <div class="pricing-grid">
         <div class="price-card">
           <div><h3 class="mb-8">Entry Level</h3><p class="text-muted text-sm">For job seekers entering or re-entering the workforce</p></div>
-          <div class="price-amount">$15<span>–$25/mo</span></div>
+          <div class="price-amount">$15<span>/mo</span></div>
           <ul class="price-features">
-            <li>Resume paste &amp; AI extraction</li><li>Accessibility filtering (private)</li><li>Job match scoring</li>
-            <li>ATS rewriter — 10 versions/mo</li><li>Remote + local job search</li><li>Dashboard</li>
+            <li>Résumé paste &amp; AI extraction</li>
+            <li>ATS résumé rewriter — <strong>10 rewrites / month</strong></li>
+            <li>Live job search (RemoteOK + Jobicy)</li>
+            <li>Private accessibility filtering</li>
+            <li>Job-match scoring</li>
+            <li>Dashboard + saved searches</li>
           </ul>
-          <button class="btn btn-ghost" onclick="joinWaitlist('entry')">Join Waitlist</button>
+          <button class="btn btn-ghost" onclick="subscribe('entry')">Subscribe — $15/mo</button>
         </div>
         <div class="price-card featured">
           <div class="flex-row mb-8"><h3>Manager / Director</h3><span class="badge badge-blue">Popular</span></div>
           <p class="text-muted text-sm">For professionals moving into leadership roles</p>
           <div class="price-amount">$49<span>/mo</span></div>
           <ul class="price-features">
-            <li>Everything in Entry</li><li>Unlimited ATS rewrites</li><li>Manager-level keyword strategy</li>
-            <li>P&amp;L, KPI, cross-functional targeting</li><li>Priority job matching</li><li>Leadership summary generation</li>
+            <li><strong>Everything in Entry</strong></li>
+            <li><strong>Unlimited</strong> ATS rewrites</li>
+            <li>Cover-letter generator <span class="badge badge-demo" style="margin-left:6px;">Coming Jul 2026</span></li>
+            <li>LinkedIn headline &amp; About rewriter <span class="badge badge-demo" style="margin-left:6px;">Coming Jul 2026</span></li>
+            <li>Manager keyword strategy (P&amp;L, KPI, cross-functional)</li>
+            <li>Application tracker <span class="badge badge-demo" style="margin-left:6px;">Coming Jul 2026</span></li>
+            <li>Priority job-match alerts</li>
+            <li>Leadership summary generator</li>
           </ul>
-          <button class="btn btn-primary" onclick="joinWaitlist('manager')">Join Waitlist</button>
+          <button class="btn btn-primary" onclick="subscribe('manager')">Subscribe — $49/mo</button>
         </div>
         <div class="price-card">
           <div><h3 class="mb-8">VP / C-Suite / Executive</h3><p class="text-muted text-sm">For senior leaders seeking board-level roles</p></div>
-          <div class="price-amount">$99<span>–$199/mo</span></div>
+          <div class="price-amount">$199<span>/mo</span></div>
           <ul class="price-features">
-            <li>Everything in Manager</li><li>C-suite tone calibration</li><li>Board-level keyword targeting</li>
-            <li>Revenue growth narrative framing</li><li>Strategic vision positioning</li><li>Priority match alerts</li>
+            <li><strong>Everything in Manager</strong></li>
+            <li><strong>Monthly 1-on-1 résumé review</strong> with Jerome (30 min, scheduled by email)</li>
+            <li><strong>Private “Career OS”</strong> — your full career history personalizes every rewrite</li>
+            <li>Executive bio &amp; board-deck blurb generator</li>
+            <li>Board-level keyword targeting + C-suite tone calibration</li>
+            <li>Revenue-growth narrative framing</li>
+            <li>Strategic vision positioning generator</li>
+            <li>Unlimited cover letters for executive roles (board / investor framing)</li>
+            <li>LinkedIn recommendation drafts</li>
+            <li>Interview prep packet (questions + STAR scaffolds from your Career OS)</li>
+            <li><strong>Quarterly 15-min strategic positioning call</strong></li>
+            <li>Confidentiality lock — encrypted, never used for AI training</li>
+            <li>Priority email support (24-hour response, Jerome personally)</li>
+            <li><strong>Locked-in pricing</strong> — your $199 stays $199 even when we raise rates</li>
           </ul>
-          <button class="btn btn-ghost" onclick="joinWaitlist('executive')">Join Waitlist</button>
+          <button class="btn btn-ghost" onclick="subscribe('executive')">Subscribe — $199/mo</button>
         </div>
       </div>
-      <p class="text-sm text-muted mt-24" style="border-top:1px solid var(--border);padding-top:16px;">Pricing is indicative and subject to change. Joining the waitlist does not commit you to a purchase. Full terms of service published before billing goes live.</p>
+      <p class="text-sm text-muted mt-24" style="border-top:1px solid var(--border);padding-top:16px;">All plans are monthly, billed by Stripe. Cancel anytime from your account. Features marked <span class="badge badge-demo" style="font-size:.7rem;">Coming Jul 2026</span> are shipping this summer — your subscription is locked in at today’s price when they go live. The monthly 1-on-1 résumé review on the Executive tier is scheduled by email within 7 days of subscribing.</p>
     </section>
 
   </main>
@@ -475,6 +498,32 @@ main{flex:1;padding:32px 24px;max-width:920px;margin:0 auto;width:100%;}
 
 <script>
 'use strict';
+
+/* ─── SUPABASE CLIENT ─────────────────────────────────────────────────── */
+/* ─── STRIPE CONFIG ───────────────────────────────────────────────────── */
+var STRIPE_PUBLISHABLE_KEY = 'pk_live_51SP7qC3TEV46czxit7mp5qTBkH2yQSnZksvISipqJSFAIJm7qRfN7pdE2yyxrV8xtfYcShHrC5R4RH4EjupnY0gr00s0ieATOt';
+var STRIPE_PRICES = {
+  entry:     'price_1TcytC3TEV46czxiQ73Y4J03',  // $15/mo
+  manager:   'price_1Tcyvp3TEV46czxiZw9l5VRw',  // $49/mo
+  executive: 'price_1Tcz4M3TEV46czxilfxaFDWB'   // $199/mo
+};
+
+function subscribe(plan) {
+  if (!currentUser) {
+    showToast('Please sign in first to subscribe.');
+    return;
+  }
+  var stripe = Stripe(STRIPE_PUBLISHABLE_KEY);
+  stripe.redirectToCheckout({
+    lineItems: [{ price: STRIPE_PRICES[plan], quantity: 1 }],
+    mode: 'subscription',
+    successUrl: window.location.origin + window.location.pathname + '?subscribed=true',
+    cancelUrl: window.location.href,
+    customerEmail: currentUser.email
+  }).then(function(result) {
+    if (result.error) { showToast(result.error.message); }
+  });
+}
 
 /* ─── SUPABASE CLIENT ─────────────────────────────────────────────────── */
 var SUPABASE_URL = 'https://alognutzsyqtnarzpqoo.supabase.co';
