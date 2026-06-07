@@ -216,6 +216,15 @@ main{flex:1;padding:32px 24px;max-width:920px;margin:0 auto;width:100%;}
     <button class="nav-btn" data-screen="pricing" onclick="showScreen('pricing')" aria-selected="false">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Pricing
     </button>
+    <button class="nav-btn" data-screen="coverletter" onclick="showScreen('coverletter')" aria-selected="false">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>Cover Letters
+    </button>
+    <button class="nav-btn" data-screen="linkedin" onclick="showScreen('linkedin')" aria-selected="false">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>LinkedIn
+    </button>
+    <button class="nav-btn" data-screen="tracker" onclick="showScreen('tracker')" aria-selected="false">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Tracker
+    </button>
   </nav>
   <main id="main-content" tabindex="-1">
 
@@ -429,10 +438,10 @@ main{flex:1;padding:32px 24px;max-width:920px;margin:0 auto;width:100%;}
           <ul class="price-features">
             <li><strong>Everything in Entry</strong></li>
             <li><strong>Unlimited</strong> ATS rewrites</li>
-            <li>Cover-letter generator <span class="badge badge-demo" style="margin-left:6px;">Coming Jul 2026</span></li>
-            <li>LinkedIn headline &amp; About rewriter <span class="badge badge-demo" style="margin-left:6px;">Coming Jul 2026</span></li>
+            <li>Cover-letter generator</li>
+            <li>LinkedIn headline &amp; About rewriter</li>
             <li>Manager keyword strategy (P&amp;L, KPI, cross-functional)</li>
-            <li>Application tracker <span class="badge badge-demo" style="margin-left:6px;">Coming Jul 2026</span></li>
+            <li>Application tracker</li>
             <li>Priority job-match alerts</li>
             <li>Leadership summary generator</li>
           </ul>
@@ -460,7 +469,163 @@ main{flex:1;padding:32px 24px;max-width:920px;margin:0 auto;width:100%;}
           <button class="btn btn-ghost" onclick="subscribe('executive')">Subscribe — $199/mo</button>
         </div>
       </div>
-      <p class="text-sm text-muted mt-24" style="border-top:1px solid var(--border);padding-top:16px;">All plans are monthly, billed by Stripe. Cancel anytime from your account. Features marked <span class="badge badge-demo" style="font-size:.7rem;">Coming Jul 2026</span> are shipping this summer — your subscription is locked in at today’s price when they go live. The monthly 1-on-1 résumé review on the Executive tier is scheduled by email within 7 days of subscribing.</p>
+      <p class="text-sm text-muted mt-24" style="border-top:1px solid var(--border);padding-top:16px;">All plans are monthly, billed by Stripe. Cancel anytime from your account. The monthly 1-on-1 résumé review on the Executive tier is scheduled by email within 7 days of subscribing.</p>
+    </section>
+
+    <!-- COVER LETTER GENERATOR -->
+    <section id="screen-coverletter" class="screen" aria-label="Cover Letter Generator">
+      <div class="section-header">
+        <h2>Cover Letter Generator</h2>
+        <p class="text-muted">Paste a job description and your résumé summary. AI writes a tailored cover letter using the Fracture-Pressure-Shift narrative framework.</p>
+      </div>
+      <div class="card">
+        <label for="cl-job-title" class="text-sm" style="display:block;margin-bottom:6px;">Job Title <span class="text-muted">(optional)</span></label>
+        <input type="text" id="cl-job-title" class="signin-input" placeholder="e.g. Senior Product Manager" style="margin-bottom:12px;">
+
+        <label for="cl-company" class="text-sm" style="display:block;margin-bottom:6px;">Company <span class="text-muted">(optional)</span></label>
+        <input type="text" id="cl-company" class="signin-input" placeholder="e.g. Acme Corp" style="margin-bottom:12px;">
+
+        <label for="cl-jd" class="text-sm" style="display:block;margin-bottom:6px;">Job Description</label>
+        <textarea id="cl-jd" class="signin-input" rows="6" placeholder="Paste the full job description here…" style="margin-bottom:12px;font-family:inherit;"></textarea>
+
+        <label for="cl-summary" class="text-sm" style="display:block;margin-bottom:6px;">Your Résumé Summary / Top Wins</label>
+        <textarea id="cl-summary" class="signin-input" rows="5" placeholder="Paste 3-6 bullet points of your strongest accomplishments…" style="margin-bottom:12px;font-family:inherit;"></textarea>
+
+        <label class="text-sm" style="display:block;margin-bottom:8px;">Tone</label>
+        <div class="flex-row mb-16" id="cl-tone-row" style="flex-wrap:wrap;gap:8px;">
+          <button type="button" class="btn btn-ghost tone-btn active" data-tone="confident" onclick="selectTone('confident')">Confident</button>
+          <button type="button" class="btn btn-ghost tone-btn" data-tone="warm" onclick="selectTone('warm')">Warm</button>
+          <button type="button" class="btn btn-ghost tone-btn" data-tone="analytical" onclick="selectTone('analytical')">Analytical</button>
+          <button type="button" class="btn btn-ghost tone-btn" data-tone="executive" onclick="selectTone('executive')">Executive</button>
+        </div>
+
+        <div class="flex-row" style="gap:8px;flex-wrap:wrap;">
+          <button class="btn btn-primary" id="cl-generate-btn" onclick="generateCoverLetter()">Generate Cover Letter</button>
+          <button class="btn btn-ghost" onclick="clearCoverLetter()">Clear</button>
+        </div>
+      </div>
+
+      <div class="card" id="cl-output-card" style="display:none;margin-top:16px;">
+        <div class="flex-row mb-8">
+          <h3 style="margin:0;">Generated Cover Letter</h3>
+          <span class="badge" id="cl-keywords-badge" style="display:none;"></span>
+        </div>
+        <pre id="cl-output" style="white-space:pre-wrap;font-family:inherit;background:var(--bg);padding:16px;border-radius:8px;border:1px solid var(--border);"></pre>
+        <div class="flex-row mt-16" style="gap:8px;flex-wrap:wrap;">
+          <button class="btn btn-ghost" onclick="copyCoverLetter()">Copy to clipboard</button>
+          <button class="btn btn-primary" onclick="saveCoverLetter()">Save to history</button>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:16px;">
+        <div class="flex-row mb-8">
+          <h3 style="margin:0;">History</h3>
+          <button class="btn btn-ghost btn-sm" onclick="loadCoverLetters()" aria-label="Refresh history">Refresh</button>
+        </div>
+        <div id="cl-history"><p class="text-muted">Sign in and generate a letter to start your history.</p></div>
+      </div>
+    </section>
+
+    <!-- LINKEDIN REWRITER -->
+    <section id="screen-linkedin" class="screen" aria-label="LinkedIn Rewriter">
+      <div class="section-header">
+        <h2>LinkedIn Profile Rewriter</h2>
+        <p class="text-muted">AI rewrites your LinkedIn headline and About section to match a target role with recruiter-magnet keywords.</p>
+      </div>
+      <div class="card">
+        <label for="li-role" class="text-sm" style="display:block;margin-bottom:6px;">Target Role</label>
+        <input type="text" id="li-role" class="signin-input" placeholder="e.g. Director of Product Management" style="margin-bottom:12px;">
+
+        <label for="li-headline" class="text-sm" style="display:block;margin-bottom:6px;">Current Headline</label>
+        <input type="text" id="li-headline" class="signin-input" placeholder="Your current LinkedIn headline" style="margin-bottom:12px;">
+
+        <label for="li-about" class="text-sm" style="display:block;margin-bottom:6px;">Current About Section</label>
+        <textarea id="li-about" class="signin-input" rows="6" placeholder="Paste your current About section text…" style="margin-bottom:12px;font-family:inherit;"></textarea>
+
+        <div class="flex-row" style="gap:8px;flex-wrap:wrap;">
+          <button class="btn btn-primary" id="li-generate-btn" onclick="generateLinkedIn()">Rewrite Profile</button>
+          <button class="btn btn-ghost" onclick="clearLinkedIn()">Clear</button>
+        </div>
+      </div>
+
+      <div class="card" id="li-output-card" style="display:none;margin-top:16px;">
+        <div class="flex-row mb-8">
+          <h3 style="margin:0;">Rewritten Profile</h3>
+          <span class="badge" id="li-keywords-badge" style="display:none;"></span>
+        </div>
+        <div style="margin-bottom:16px;">
+          <div class="flex-row mb-8">
+            <strong>New Headline</strong>
+            <button class="btn btn-ghost btn-sm" onclick="copyLinkedInHeadline()">Copy</button>
+          </div>
+          <pre id="li-headline-out" style="white-space:pre-wrap;font-family:inherit;background:var(--bg);padding:12px;border-radius:8px;border:1px solid var(--border);margin:0;"></pre>
+        </div>
+        <div>
+          <div class="flex-row mb-8">
+            <strong>New About</strong>
+            <button class="btn btn-ghost btn-sm" onclick="copyLinkedInAbout()">Copy</button>
+          </div>
+          <pre id="li-about-out" style="white-space:pre-wrap;font-family:inherit;background:var(--bg);padding:12px;border-radius:8px;border:1px solid var(--border);margin:0;"></pre>
+        </div>
+        <div class="flex-row mt-16">
+          <button class="btn btn-primary" onclick="saveLinkedIn()">Save to history</button>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:16px;">
+        <div class="flex-row mb-8">
+          <h3 style="margin:0;">History</h3>
+          <button class="btn btn-ghost btn-sm" onclick="loadLinkedIn()" aria-label="Refresh history">Refresh</button>
+        </div>
+        <div id="li-history"><p class="text-muted">Sign in and rewrite a profile to start your history.</p></div>
+      </div>
+    </section>
+
+    <!-- APPLICATION TRACKER -->
+    <section id="screen-tracker" class="screen" aria-label="Application Tracker">
+      <div class="section-header">
+        <h2>Application Tracker</h2>
+        <p class="text-muted">Track every job you apply to in one place. Filter by status, set next-action reminders.</p>
+      </div>
+
+      <div class="flex-row mb-16" style="gap:8px;flex-wrap:wrap;">
+        <button class="btn btn-primary" onclick="document.getElementById('tracker-form-card').style.display='block';document.getElementById('app-job-title').focus();">+ Add Application</button>
+        <select id="tracker-filter" class="signin-input" style="margin:0;max-width:200px;" onchange="filterApps()" aria-label="Filter by status">
+          <option value="all">All statuses</option>
+          <option value="saved">Saved</option>
+          <option value="applied">Applied</option>
+          <option value="interview">Interview</option>
+          <option value="offer">Offer</option>
+          <option value="rejected">Rejected</option>
+          <option value="withdrawn">Withdrawn</option>
+        </select>
+      </div>
+
+      <div class="card" id="tracker-form-card" style="display:none;margin-bottom:16px;">
+        <h3 style="margin-top:0;">New Application</h3>
+        <input type="text" id="app-job-title" class="signin-input" placeholder="Job title*" style="margin-bottom:8px;">
+        <input type="text" id="app-company" class="signin-input" placeholder="Company*" style="margin-bottom:8px;">
+        <input type="url" id="app-url" class="signin-input" placeholder="Job posting URL (optional)" style="margin-bottom:8px;">
+        <select id="app-status" class="signin-input" style="margin-bottom:8px;">
+          <option value="saved">Saved</option>
+          <option value="applied" selected>Applied</option>
+          <option value="interview">Interview</option>
+          <option value="offer">Offer</option>
+          <option value="rejected">Rejected</option>
+          <option value="withdrawn">Withdrawn</option>
+        </select>
+        <textarea id="app-notes" class="signin-input" rows="3" placeholder="Notes (optional)" style="margin-bottom:8px;font-family:inherit;"></textarea>
+        <label class="text-sm" style="display:block;margin-bottom:4px;">Next action (optional)</label>
+        <input type="text" id="app-next-action" class="signin-input" placeholder="e.g. Follow up with recruiter" style="margin-bottom:8px;">
+        <label class="text-sm" style="display:block;margin-bottom:4px;">Next action date (optional)</label>
+        <input type="date" id="app-next-action-at" class="signin-input" style="margin-bottom:12px;">
+        <div class="flex-row" style="gap:8px;">
+          <button class="btn btn-primary" onclick="saveApplication()">Save</button>
+          <button class="btn btn-ghost" onclick="closeTrackerForm()">Cancel</button>
+        </div>
+      </div>
+
+      <div id="tracker-list"><p class="text-muted">Sign in and add your first application to get started.</p></div>
     </section>
 
   </main>
@@ -517,8 +682,8 @@ function subscribe(plan) {
   stripe.redirectToCheckout({
     lineItems: [{ price: STRIPE_PRICES[plan], quantity: 1 }],
     mode: 'subscription',
-    successUrl: window.location.origin + window.location.pathname + '?subscribed=true',
-    cancelUrl: window.location.href,
+    successUrl: window.location.origin + '/success.html?session_id={CHECKOUT_SESSION_ID}&plan=' + plan,
+    cancelUrl: window.location.origin + '/cancel.html',
     customerEmail: currentUser.email
   }).then(function(result) {
     if (result.error) { showToast(result.error.message); }
@@ -727,6 +892,12 @@ function cycleTheme() {
 
 /* ─── NAVIGATION ──────────────────────────────────────────────────────── */
 function showScreen(id) {
+  // Lazy-load data for new screens
+  setTimeout(function() {
+    if (id === 'coverletter' && STATE.user) loadCoverLetters();
+    if (id === 'linkedin' && STATE.user) loadLinkedIn();
+    if (id === 'tracker' && STATE.user) loadApplications();
+  }, 100);
   document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active','visible'); });
   document.querySelectorAll('.nav-btn').forEach(function(b) {
     var active = b.dataset.screen === id;
@@ -1095,12 +1266,6 @@ function clearPrivacy() {
   announce('Preferences cleared.');
 }
 
-/* ─── PRICING ─────────────────────────────────────────────────────────── */
-function joinWaitlist(tier) {
-  toast('Email jerome7207@gmail.com with "' + tier + ' waitlist" to be notified at launch.', 'info');
-  announce('Waitlist info for ' + tier + ' tier.');
-}
-
 /* ─── MODAL ───────────────────────────────────────────────────────────── */
 var lastFocused = null;
 function openModal() {
@@ -1171,6 +1336,259 @@ function announce(msg) {
     }
   });
 }());
+
+/* ─── COVER LETTER GENERATOR ──────────────────────────────────────────── */
+var CL_TONE = 'confident';
+function selectTone(tone) {
+  CL_TONE = tone;
+  var btns = document.querySelectorAll('.tone-btn');
+  for (var i = 0; i < btns.length; i++) {
+    if (btns[i].getAttribute('data-tone') === tone) btns[i].classList.add('active');
+    else btns[i].classList.remove('active');
+  }
+}
+
+async function generateCoverLetter() {
+  if (!STATE.user) { toast('Please sign in to use the cover letter generator.', 'error'); return; }
+  var jd = document.getElementById('cl-jd').value.trim();
+  var summary = document.getElementById('cl-summary').value.trim();
+  var title = document.getElementById('cl-job-title').value.trim();
+  var company = document.getElementById('cl-company').value.trim();
+  if (!jd) { toast('Paste the job description first.', 'error'); return; }
+  if (!summary) { toast('Paste your résumé summary first.', 'error'); return; }
+  var btn = document.getElementById('cl-generate-btn');
+  btn.disabled = true; btn.textContent = 'Generating…';
+  announce('Generating cover letter, please wait…');
+  try {
+    var res = await sb.functions.invoke('cover-letter-generate', {
+      body: { jobDescription: jd, jobTitle: title, company: company, resumeSummary: summary, tone: CL_TONE }
+    });
+    if (res.error) throw res.error;
+    var data = res.data || {};
+    document.getElementById('cl-output').textContent = data.body || '(no content returned)';
+    var kw = document.getElementById('cl-keywords-badge');
+    if (data.keywords_used && data.keywords_used.length) {
+      kw.textContent = 'Keywords woven in: ' + data.keywords_used.join(', ');
+      kw.style.display = 'inline-block';
+    } else { kw.style.display = 'none'; }
+    document.getElementById('cl-output-card').style.display = 'block';
+    announce('Cover letter ready.');
+  } catch (e) {
+    console.error(e);
+    toast('Generation failed: ' + (e.message || 'unknown error'), 'error');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Generate Cover Letter';
+  }
+}
+
+function clearCoverLetter() {
+  document.getElementById('cl-jd').value = '';
+  document.getElementById('cl-summary').value = '';
+  document.getElementById('cl-job-title').value = '';
+  document.getElementById('cl-company').value = '';
+  document.getElementById('cl-output-card').style.display = 'none';
+  selectTone('confident');
+  announce('Form cleared.');
+}
+
+function copyCoverLetter() {
+  var txt = document.getElementById('cl-output').textContent;
+  navigator.clipboard.writeText(txt).then(function() { toast('Copied to clipboard.', 'success'); });
+}
+
+async function saveCoverLetter() {
+  if (!STATE.user) { toast('Sign in to save.', 'error'); return; }
+  var body = document.getElementById('cl-output').textContent;
+  if (!body) { toast('Generate a letter first.', 'error'); return; }
+  var row = {
+    user_id: STATE.user.id,
+    job_description: document.getElementById('cl-jd').value.trim(),
+    job_title: document.getElementById('cl-job-title').value.trim() || null,
+    company: document.getElementById('cl-company').value.trim() || null,
+    body: body,
+    tone: CL_TONE
+  };
+  var res = await sb.from('cover_letters').insert(row);
+  if (res.error) { toast('Save failed: ' + res.error.message, 'error'); return; }
+  toast('Saved to history.', 'success');
+  loadCoverLetters();
+}
+
+async function loadCoverLetters() {
+  var div = document.getElementById('cl-history');
+  if (!STATE.user) { div.innerHTML = '<p class="text-muted">Sign in and generate a letter to start your history.</p>'; return; }
+  var res = await sb.from('cover_letters').select('id,job_title,company,tone,created_at,body').order('created_at', { ascending: false }).limit(20);
+  if (res.error) { div.innerHTML = '<p class="text-muted">Could not load history.</p>'; return; }
+  if (!res.data || !res.data.length) { div.innerHTML = '<p class="text-muted">No cover letters saved yet.</p>'; return; }
+  div.innerHTML = res.data.map(function(r) {
+    var when = new Date(r.created_at).toLocaleDateString();
+    var label = (r.job_title || 'Untitled') + (r.company ? ' @ ' + r.company : '');
+    var safe = (r.body || '').replace(/</g, '&lt;');
+    return '<details style="margin-bottom:8px;border:1px solid var(--border);border-radius:6px;padding:8px;">'
+      + '<summary><strong>' + label + '</strong> <span class="text-muted">— ' + when + ' · ' + (r.tone || '') + '</span></summary>'
+      + '<pre style="white-space:pre-wrap;font-family:inherit;margin-top:8px;">' + safe + '</pre></details>';
+  }).join('');
+}
+
+/* ─── LINKEDIN REWRITER ───────────────────────────────────────────────── */
+async function generateLinkedIn() {
+  if (!STATE.user) { toast('Please sign in to use the LinkedIn rewriter.', 'error'); return; }
+  var role = document.getElementById('li-role').value.trim();
+  var headline = document.getElementById('li-headline').value.trim();
+  var about = document.getElementById('li-about').value.trim();
+  if (!role) { toast('Enter the target role.', 'error'); return; }
+  if (!headline && !about) { toast('Enter your current headline or About section.', 'error'); return; }
+  var btn = document.getElementById('li-generate-btn');
+  btn.disabled = true; btn.textContent = 'Rewriting…';
+  announce('Rewriting profile, please wait…');
+  try {
+    var res = await sb.functions.invoke('linkedin-rewrite', {
+      body: { targetRole: role, currentHeadline: headline, currentAbout: about }
+    });
+    if (res.error) throw res.error;
+    var data = res.data || {};
+    document.getElementById('li-headline-out').textContent = data.headline || '(no headline returned)';
+    document.getElementById('li-about-out').textContent = data.about || '(no about returned)';
+    var kw = document.getElementById('li-keywords-badge');
+    if (data.keywords_used && data.keywords_used.length) {
+      kw.textContent = 'Keywords: ' + data.keywords_used.join(', ');
+      kw.style.display = 'inline-block';
+    } else { kw.style.display = 'none'; }
+    document.getElementById('li-output-card').style.display = 'block';
+    announce('Profile rewrite ready.');
+  } catch (e) {
+    console.error(e);
+    toast('Rewrite failed: ' + (e.message || 'unknown error'), 'error');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Rewrite Profile';
+  }
+}
+
+function clearLinkedIn() {
+  document.getElementById('li-role').value = '';
+  document.getElementById('li-headline').value = '';
+  document.getElementById('li-about').value = '';
+  document.getElementById('li-output-card').style.display = 'none';
+  announce('Form cleared.');
+}
+
+function copyLinkedInHeadline() {
+  navigator.clipboard.writeText(document.getElementById('li-headline-out').textContent).then(function() { toast('Headline copied.', 'success'); });
+}
+function copyLinkedInAbout() {
+  navigator.clipboard.writeText(document.getElementById('li-about-out').textContent).then(function() { toast('About copied.', 'success'); });
+}
+
+async function saveLinkedIn() {
+  if (!STATE.user) { toast('Sign in to save.', 'error'); return; }
+  var newHead = document.getElementById('li-headline-out').textContent;
+  var newAbout = document.getElementById('li-about-out').textContent;
+  if (!newHead && !newAbout) { toast('Generate a rewrite first.', 'error'); return; }
+  var row = {
+    user_id: STATE.user.id,
+    target_role: document.getElementById('li-role').value.trim(),
+    original_headline: document.getElementById('li-headline').value.trim(),
+    rewritten_headline: newHead,
+    original_about: document.getElementById('li-about').value.trim(),
+    rewritten_about: newAbout
+  };
+  var res = await sb.from('linkedin_rewrites').insert(row);
+  if (res.error) { toast('Save failed: ' + res.error.message, 'error'); return; }
+  toast('Saved to history.', 'success');
+  loadLinkedIn();
+}
+
+async function loadLinkedIn() {
+  var div = document.getElementById('li-history');
+  if (!STATE.user) { div.innerHTML = '<p class="text-muted">Sign in and rewrite a profile to start your history.</p>'; return; }
+  var res = await sb.from('linkedin_rewrites').select('id,target_role,rewritten_headline,rewritten_about,created_at').order('created_at', { ascending: false }).limit(20);
+  if (res.error) { div.innerHTML = '<p class="text-muted">Could not load history.</p>'; return; }
+  if (!res.data || !res.data.length) { div.innerHTML = '<p class="text-muted">No rewrites saved yet.</p>'; return; }
+  div.innerHTML = res.data.map(function(r) {
+    var when = new Date(r.created_at).toLocaleDateString();
+    var safeHead = (r.rewritten_headline || '').replace(/</g, '&lt;');
+    var safeAbout = (r.rewritten_about || '').replace(/</g, '&lt;');
+    return '<details style="margin-bottom:8px;border:1px solid var(--border);border-radius:6px;padding:8px;">'
+      + '<summary><strong>' + (r.target_role || 'Untitled') + '</strong> <span class="text-muted">— ' + when + '</span></summary>'
+      + '<div style="margin-top:8px;"><strong>Headline:</strong><pre style="white-space:pre-wrap;font-family:inherit;margin:4px 0;">' + safeHead + '</pre>'
+      + '<strong>About:</strong><pre style="white-space:pre-wrap;font-family:inherit;margin:4px 0;">' + safeAbout + '</pre></div></details>';
+  }).join('');
+}
+
+/* ─── APPLICATION TRACKER ─────────────────────────────────────────────── */
+async function saveApplication() {
+  if (!STATE.user) { toast('Sign in to track applications.', 'error'); return; }
+  var title = document.getElementById('app-job-title').value.trim();
+  var company = document.getElementById('app-company').value.trim();
+  if (!title || !company) { toast('Job title and company are required.', 'error'); return; }
+  var status = document.getElementById('app-status').value;
+  var row = {
+    user_id: STATE.user.id,
+    job_title: title,
+    company: company,
+    job_url: document.getElementById('app-url').value.trim() || null,
+    status: status,
+    notes: document.getElementById('app-notes').value.trim() || null,
+    applied_at: (status === 'applied' || status === 'interview' || status === 'offer') ? new Date().toISOString() : null,
+    next_action: document.getElementById('app-next-action').value.trim() || null,
+    next_action_at: document.getElementById('app-next-action-at').value || null
+  };
+  var res = await sb.from('applications').insert(row);
+  if (res.error) { toast('Save failed: ' + res.error.message, 'error'); return; }
+  toast('Application saved.', 'success');
+  closeTrackerForm();
+  loadApplications();
+}
+
+function closeTrackerForm() {
+  document.getElementById('tracker-form-card').style.display = 'none';
+  ['app-job-title','app-company','app-url','app-notes','app-next-action','app-next-action-at'].forEach(function(id) {
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('app-status').value = 'applied';
+}
+
+async function loadApplications() {
+  var div = document.getElementById('tracker-list');
+  if (!STATE.user) { div.innerHTML = '<p class="text-muted">Sign in and add your first application to get started.</p>'; return; }
+  var filter = document.getElementById('tracker-filter').value;
+  var q = sb.from('applications').select('*').order('created_at', { ascending: false }).limit(100);
+  if (filter !== 'all') q = q.eq('status', filter);
+  var res = await q;
+  if (res.error) { div.innerHTML = '<p class="text-muted">Could not load.</p>'; return; }
+  if (!res.data || !res.data.length) {
+    div.innerHTML = '<p class="text-muted">' + (filter === 'all' ? 'No applications yet.' : 'No applications with status "' + filter + '".') + '</p>';
+    return;
+  }
+  var statusColors = { saved:'#94a3b8', applied:'#60a5fa', interview:'#fbbf24', offer:'#4ade80', rejected:'#f87171', withdrawn:'#a78bfa' };
+  div.innerHTML = res.data.map(function(r) {
+    var when = new Date(r.created_at).toLocaleDateString();
+    var clr = statusColors[r.status] || '#94a3b8';
+    var safeNotes = (r.notes || '').replace(/</g, '&lt;');
+    var urlLink = r.job_url ? '<a href="' + r.job_url + '" target="_blank" rel="noopener" style="color:var(--accent);">View posting →</a>' : '';
+    var nextLine = r.next_action ? '<div class="text-sm" style="margin-top:6px;"><strong>Next:</strong> ' + r.next_action.replace(/</g,'&lt;') + (r.next_action_at ? ' <span class="text-muted">(' + r.next_action_at + ')</span>' : '') + '</div>' : '';
+    return '<div class="card" style="margin-bottom:10px;padding:14px;">'
+      + '<div class="flex-row mb-8" style="justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;">'
+      + '<div><strong>' + r.job_title + '</strong> <span class="text-muted">@ ' + r.company + '</span></div>'
+      + '<div><span class="badge" style="background:' + clr + '20;color:' + clr + ';border:1px solid ' + clr + '40;">' + r.status + '</span>'
+      + ' <button class="btn btn-ghost btn-sm" onclick="deleteApp(\'' + r.id + '\')" aria-label="Delete">×</button></div></div>'
+      + '<div class="text-sm text-muted">Added ' + when + (r.applied_at ? ' · Applied ' + new Date(r.applied_at).toLocaleDateString() : '') + '</div>'
+      + (safeNotes ? '<div class="text-sm" style="margin-top:6px;">' + safeNotes + '</div>' : '')
+      + nextLine
+      + (urlLink ? '<div class="text-sm" style="margin-top:6px;">' + urlLink + '</div>' : '')
+      + '</div>';
+  }).join('');
+}
+
+async function deleteApp(id) {
+  if (!confirm('Delete this application?')) return;
+  var res = await sb.from('applications').delete().eq('id', id);
+  if (res.error) { toast('Delete failed.', 'error'); return; }
+  loadApplications();
+}
+
+function filterApps() { loadApplications(); }
+
 </script>
 </body>
 </html>
