@@ -65,6 +65,7 @@ h3{font-size:1.1rem;font-weight:600;}
 .nav-btn:hover{color:var(--text);}
 .nav-btn.active{color:var(--accent);border-bottom-color:var(--accent);}
 .nav-btn svg{width:16px;height:16px;flex-shrink:0;}
+@media (max-width:640px){.nav{padding:0 8px;}.nav-btn{padding:12px 10px;font-size:.8125rem;gap:5px;}.nav-btn svg{width:14px;height:14px;}}
 main{flex:1;padding:32px 24px;max-width:920px;margin:0 auto;width:100%;}
 .screen{display:none;opacity:0;transform:translateY(8px);transition:opacity .25s,transform .25s;}
 .screen.active{display:block;}
@@ -263,7 +264,7 @@ main{flex:1;padding:32px 24px;max-width:920px;margin:0 auto;width:100%;}
         <button class="filter-btn" onclick="filterJobs('remote',this)">Remote Only</button>
       </div>
       <div id="jobs-list" class="stack" role="list" aria-label="Sample job matches"></div>
-      <p class="text-muted text-sm mt-16" style="border-top:1px solid var(--border);padding-top:16px;">Sample listings for demonstration. Live search aggregates Indeed, LinkedIn, We Work Remotely, Remote.co, FlexJobs, and local boards — coming soon.</p>
+      <p class="text-muted text-sm mt-16" style="border-top:1px solid var(--border);padding-top:16px;">Sample listings shown in demo mode. <strong>Sign in with a magic link</strong> to run live searches across RemoteOK, Jobicy, and additional boards — filtered by your accessibility preferences.</p>
     </section>
 
     <!-- MY RESUME -->
