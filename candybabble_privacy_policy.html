@@ -46,7 +46,7 @@
       <span>CandyBabble Careers</span>
     </a>
     <h1>Privacy Policy</h1>
-    <p class="last-updated">Effective date: May 30, 2026 &nbsp;·&nbsp; Last updated: May 30, 2026</p>
+    <p class="last-updated">Effective date: May 30, 2026 &nbsp;·&nbsp; Last updated: June 6, 2026</p>
   </header>
 
   <div class="intro-box">
@@ -65,8 +65,9 @@
   <h3>Resume Information</h3>
   <p>When you use the My Resume feature, you paste your resume text. We extract structured information from that text — name, contact details, skills, work history, and education. <strong>You review and confirm every field before anything is saved.</strong> This information is stored in your personal account and used only to generate tailored resume versions for you.</p>
 
-  <h3>Accessibility Preferences</h3>
+  <h3>Accessibility Preferences <em style="color:#60a5fa;font-style:normal;font-size:.85rem;font-weight:500;">(sensitive data — explicit consent required)</em></h3>
   <p>You may optionally tell us about your accessibility needs — for example, that you use a wheelchair, have one arm, have dyslexia, or any other need. <strong>This information is used for one purpose only: to help filter and prioritize job listings based on your stated preferences.</strong></p>
+  <p>Disability and accessibility information is a <strong>special category of personal data</strong> under the EU General Data Protection Regulation (GDPR Article 9) and <strong>sensitive personal information</strong> under the California Privacy Rights Act (CPRA). We collect it only with your <strong>explicit, opt-in consent</strong>, only for the filtering purpose stated above, and you may withdraw consent and erase this data at any time from the Accessibility tab in your account, with no impact on your ability to use the rest of the platform.</p>
 
   <div class="never-list">
     <p>Your accessibility information is NEVER:</p>
@@ -103,14 +104,21 @@
   <p>Accessibility preference data is stored in a dedicated table with the strictest access controls. No application code reads this data for any purpose other than filtering job listings for your account.</p>
   <p>No security system is perfect. If we become aware of a breach affecting your data, we will notify you promptly.</p>
 
-  <h2>5. Third-Party Services</h2>
-  <p>We use a small number of third-party services to operate the platform:</p>
+  <h2>5. Third-Party Services (Subprocessors)</h2>
+  <p>We use a small number of third-party services (“subprocessors”) to operate the platform. Each is named below with the data they receive and a link to their own privacy policy.</p>
   <ul>
-    <li><strong>Supabase</strong> — database and authentication. <a href="https://supabase.com/privacy" target="_blank">Supabase Privacy Policy</a></li>
-    <li><strong>Vercel</strong> — web hosting. <a href="https://vercel.com/legal/privacy-policy" target="_blank">Vercel Privacy Policy</a></li>
-    <li><strong>Google Fonts</strong> — typography (Inter font loaded on page). <a href="https://policies.google.com/privacy" target="_blank">Google Privacy Policy</a></li>
+    <li><strong>Supabase</strong> — database, authentication, and serverless functions. Receives: account email, résumé data, accessibility preferences (encrypted at rest), job-search activity. <a href="https://supabase.com/privacy" target="_blank" rel="noopener">Supabase Privacy Policy</a></li>
+    <li><strong>GitHub Pages / Cloudflare</strong> — static web hosting and CDN for candybabble.com. Receives: IP address and standard request logs. <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener">GitHub Privacy Statement</a> &middot; <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener">Cloudflare Privacy Policy</a></li>
+    <li><strong>OpenAI</strong> — large-language-model API used to generate ATS-tailored résumé rewrites. Receives: the job description and résumé bullet you paste into the ATS Rewriter. <strong>We do not send accessibility preferences, disability data, or any account identifiers to OpenAI.</strong> <a href="https://openai.com/policies/privacy-policy" target="_blank" rel="noopener">OpenAI Privacy Policy</a></li>
+    <li><strong>RemoteOK and Jobicy</strong> — public job-listing APIs queried server-side for live job search. They receive only the search keywords and level filter you submit. They do <strong>not</strong> receive your email, résumé, or accessibility preferences. <a href="https://remoteok.com/privacy" target="_blank" rel="noopener">RemoteOK Privacy</a> &middot; <a href="https://jobicy.com/privacy" target="_blank" rel="noopener">Jobicy Privacy</a></li>
+    <li><strong>Stripe</strong> — payment processing (once paid plans go live). Receives: name, email, and billing details you provide at checkout. Stripe never shares your card number with us. <a href="https://stripe.com/privacy" target="_blank" rel="noopener">Stripe Privacy Policy</a></li>
+    <li><strong>Google Fonts</strong> — typography (Inter and OpenDyslexic fonts). <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google Privacy Policy</a></li>
   </ul>
-  <p>We do not use Facebook Pixel, Google Analytics, or any advertising networks.</p>
+  <p>We do not use Facebook Pixel, Google Analytics, advertising networks, retargeting pixels, or session-replay tools.</p>
+
+  <div class="highlight-box">
+    <p><strong>AI training carve-out.</strong> We do not train AI models on your data, and our OpenAI usage is configured to opt out of provider training. We do not sell or share your data with AI companies, advertisers, recruiters, or employers for any training, profiling, or marketing purpose.</p>
+  </div>
 
   <h2>6. Your Rights</h2>
   <p>You have the right to:</p>
@@ -118,13 +126,24 @@
     <li><strong>Access</strong> — request a copy of all data we hold about you</li>
     <li><strong>Correct</strong> — update any inaccurate information in your account</li>
     <li><strong>Delete</strong> — request deletion of your account and all associated data</li>
-    <li><strong>Export</strong> — request your data in a portable format</li>
+    <li><strong>Export</strong> — request your data in a portable format (machine-readable JSON)</li>
     <li><strong>Withdraw consent</strong> — remove any accessibility preferences at any time without affecting your access to the platform</li>
+    <li><strong>Object</strong> — object to any processing you believe is not lawful, and request a human review of any automated job-match decision</li>
+    <li><strong>Non-discrimination</strong> — exercise any right above without being denied service, charged a different price, or given a lower-quality version of the platform</li>
   </ul>
   <p>To exercise any of these rights, email us at <a href="mailto:jerome7207@gmail.com">jerome7207@gmail.com</a>. We will respond within 30 days.</p>
 
+  <h3>California residents (CCPA / CPRA)</h3>
+  <p>If you are a California resident, you have the rights listed above plus the right to know the categories and specific pieces of personal information we collect, the right to limit use and disclosure of sensitive personal information (including disability and accessibility data), and the right to opt out of the sale or sharing of personal information. <strong>We do not sell or share your personal information for cross-context behavioral advertising, and we have no “Do Not Sell or Share My Personal Information” link because there is nothing to opt out of — we do not engage in those activities.</strong> California residents may also designate an authorized agent to submit requests on their behalf.</p>
+
+  <h3>EU and UK residents (GDPR / UK GDPR)</h3>
+  <p>If you are in the European Economic Area, the United Kingdom, or Switzerland, our legal bases for processing are: (a) <strong>contract</strong> — to deliver the service you signed up for; (b) <strong>explicit consent</strong> — for accessibility preferences and any optional features; (c) <strong>legitimate interest</strong> — for security, fraud prevention, and basic usage analytics. You have the right to lodge a complaint with your local data-protection authority. International transfers to U.S.-based subprocessors (Supabase, OpenAI, Stripe, GitHub, Cloudflare) are made under Standard Contractual Clauses.</p>
+
+  <h3>Other U.S. state residents</h3>
+  <p>Residents of Colorado, Connecticut, Virginia, Utah, Texas, Oregon, Montana, and other states with comprehensive privacy laws have substantially the same rights listed above (access, correct, delete, port, opt out of targeted advertising and sale). To exercise any state-law right, email <a href="mailto:jerome7207@gmail.com">jerome7207@gmail.com</a>.</p>
+
   <h2>7. Data Retention</h2>
-  <p>We keep your data for as long as your account is active. If you request account deletion, we will permanently delete all your personal data, resume information, accessibility preferences, and generated resume versions within 30 days. Backups are purged on a rolling 90-day schedule.</p>
+  <p>We keep your data for as long as your account is active. <strong>Accessibility preferences are retained only while your account is active and are deleted immediately when you remove them from the Accessibility tab or close your account.</strong> If you request account deletion, we will permanently delete all your personal data, resume information, accessibility preferences, and generated resume versions within 30 days. Backups are purged on a rolling 90-day schedule.</p>
 
   <h2>8. Children's Privacy</h2>
   <p>CandyBabble Careers is intended for users 18 years of age and older. We do not knowingly collect information from children under 18. If you believe a child has provided us with personal information, contact us and we will delete it promptly.</p>
@@ -136,8 +155,11 @@
   <div class="contact-box">
     <p><strong>CandyBabble LLC</strong></p>
     <p>Privacy questions and data requests: <a href="mailto:jerome7207@gmail.com">jerome7207@gmail.com</a></p>
-    <p>We aim to respond to all privacy-related inquiries within 30 days.</p>
+    <p>Accessibility barriers or accommodation requests: <a href="mailto:jerome7207@gmail.com">jerome7207@gmail.com</a> &middot; <a href="candybabble_accessibility_statement.html">Accessibility Statement</a></p>
+    <p>We aim to respond to all privacy and accessibility inquiries within 30 days.</p>
   </div>
+
+  <p style="margin-top:32px;font-size:.8125rem;color:var(--muted);font-style:italic;">This policy is provided for informational purposes and reflects our current practices in plain language. It is not legal advice. For binding interpretation of your rights under any specific law, consult a qualified attorney in your jurisdiction.</p>
 
   <a href="index.html" class="back-link">
     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
