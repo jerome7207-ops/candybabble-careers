@@ -161,14 +161,28 @@ main{flex:1;padding:32px 24px;max-width:920px;margin:0 auto;width:100%;}
     </div>
     <div class="card stack">
       <div>
-        <h2 class="mb-8">Sign in or create account</h2>
-        <p class="text-muted">Enter your email to receive a magic link — no password needed.</p>
+        <h2 class="mb-8" id="auth-heading">Log in or create account</h2>
+        <p class="text-muted" id="auth-subtext">Enter your email and password to log in. New here? Switch to Create account.</p>
       </div>
       <div>
+        <!-- Name field: only shown in Create Account mode -->
+        <input type="text" id="signin-name" class="signin-input" placeholder="Your name" aria-label="Your name" autocomplete="name" style="display:none;">
         <input type="email" id="signin-email" class="signin-input" placeholder="your@email.com" aria-label="Email address" autocomplete="email">
-        <button class="btn btn-primary" style="width:100%;justify-content:center;" id="magic-link-btn" onclick="handleSignin()">
+        <input type="password" id="signin-password" class="signin-input" placeholder="Password" aria-label="Password" autocomplete="current-password">
+        <input type="password" id="signin-password2" class="signin-input" placeholder="Confirm password" aria-label="Confirm password" autocomplete="new-password" style="display:none;">
+        <button class="btn btn-primary" style="width:100%;justify-content:center;" id="password-btn" onclick="handlePasswordAuth()">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
-          Send Magic Link
+          <span id="password-btn-label">Log In</span>
+        </button>
+        <div style="text-align:center;margin-top:12px;font-size:.875rem;">
+          <a href="#" id="auth-toggle" onclick="toggleAuthMode(event)" style="color:var(--accent);text-decoration:none;">New here? Create an account</a>
+        </div>
+      </div>
+      <div style="text-align:center;color:var(--muted);font-size:.875rem;">or</div>
+      <div>
+        <button class="btn btn-ghost" style="width:100%;justify-content:center;" id="magic-link-btn" onclick="handleSignin()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          Email me a magic link instead
         </button>
         <div class="magic-sent" id="magic-sent-msg">
           ✓ Magic link sent! Check your email and click the link to sign in.
@@ -739,11 +753,78 @@ sb.auth.onAuthStateChange(function(event, session) {
   }
 });
 
+var AUTH_MODE = 'login'; // 'login' or 'signup'
+
+function toggleAuthMode(e) {
+  if (e) e.preventDefault();
+  AUTH_MODE = (AUTH_MODE === 'login') ? 'signup' : 'login';
+  var isSignup = (AUTH_MODE === 'signup');
+  document.getElementById('signin-name').style.display = isSignup ? 'block' : 'none';
+  document.getElementById('signin-password2').style.display = isSignup ? 'block' : 'none';
+  document.getElementById('password-btn-label').textContent = isSignup ? 'Create Account' : 'Log In';
+  document.getElementById('auth-heading').textContent = isSignup ? 'Create your account' : 'Log in to your account';
+  document.getElementById('auth-subtext').textContent = isSignup
+    ? 'Pick a password (at least 6 characters). You will be logged in right away.'
+    : 'Enter your email and password to log in.';
+  document.getElementById('auth-toggle').textContent = isSignup
+    ? 'Already have an account? Log in'
+    : 'New here? Create an account';
+  document.getElementById('signin-password').setAttribute('autocomplete', isSignup ? 'new-password' : 'current-password');
+}
+
+async function handlePasswordAuth() {
+  var email = document.getElementById('signin-email').value.trim();
+  var password = document.getElementById('signin-password').value;
+  if (!email || !email.includes('@')) { toast('Please enter a valid email address.', 'error'); return; }
+  if (!password || password.length < 6) { toast('Password must be at least 6 characters.', 'error'); return; }
+  var btn = document.getElementById('password-btn');
+  var label = document.getElementById('password-btn-label');
+  btn.disabled = true;
+  var prevLabel = label.textContent;
+  label.textContent = 'Please wait…';
+  try {
+    if (AUTH_MODE === 'signup') {
+      var name = document.getElementById('signin-name').value.trim();
+      var password2 = document.getElementById('signin-password2').value;
+      if (password !== password2) { throw new Error('Passwords do not match.'); }
+      var su = await sb.auth.signUp({
+        email: email,
+        password: password,
+        options: { data: { full_name: name }, emailRedirectTo: window.location.origin + '/index.html' }
+      });
+      if (su.error) throw su.error;
+      // If email confirmation is off, session exists -> onAuthStateChange logs them in.
+      // If a session came back, we're in. Otherwise try an immediate sign-in.
+      if (!su.data.session) {
+        var si = await sb.auth.signInWithPassword({ email: email, password: password });
+        if (si.error) {
+          toast('Account created. Please check your email to confirm, then log in.', 'success');
+          return;
+        }
+      }
+      toast('Account created — you are logged in.', 'success');
+    } else {
+      var result = await sb.auth.signInWithPassword({ email: email, password: password });
+      if (result.error) throw result.error;
+      toast('Logged in.', 'success');
+    }
+  } catch(err) {
+    var msg = err.message || 'Could not sign in. Try again.';
+    if (/invalid login/i.test(msg)) msg = 'Wrong email or password.';
+    if (/already registered/i.test(msg)) msg = 'That email already has an account. Switch to Log in.';
+    toast('Error: ' + msg, 'error');
+  } finally {
+    btn.disabled = false;
+    label.textContent = prevLabel;
+  }
+}
+
 async function handleSignin() {
   var email = document.getElementById('signin-email').value.trim();
   if (!email || !email.includes('@')) { toast('Please enter a valid email address.', 'error'); return; }
   var btn = document.getElementById('magic-link-btn');
   btn.disabled = true;
+  var prev = btn.innerHTML;
   btn.textContent = 'Sending…';
   try {
     var result = await sb.auth.signInWithOtp({
@@ -756,8 +837,9 @@ async function handleSignin() {
     announce('Magic link sent to ' + email + '. Check your inbox.');
   } catch(err) {
     toast('Error: ' + (err.message || 'Could not send link. Try again.'), 'error');
+  } finally {
     btn.disabled = false;
-    btn.textContent = 'Send Magic Link';
+    btn.innerHTML = prev;
   }
 }
 
@@ -774,10 +856,12 @@ async function handleSignout() {
 function showSignIn() {
   document.getElementById('screen-signin').style.display = 'flex';
   document.getElementById('app').style.display = 'none';
-  var btn = document.getElementById('magic-link-btn');
-  btn.disabled = false;
-  btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>Send Magic Link';
-  document.getElementById('magic-sent-msg').style.display = 'none';
+  var pbtn = document.getElementById('password-btn');
+  if (pbtn) pbtn.disabled = false;
+  var mbtn = document.getElementById('magic-link-btn');
+  if (mbtn) mbtn.disabled = false;
+  var sent = document.getElementById('magic-sent-msg');
+  if (sent) sent.style.display = 'none';
 }
 
 function showApp(isLoggedIn) {
